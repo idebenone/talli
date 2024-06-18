@@ -1,20 +1,24 @@
 "use client";
 
+import { useEffect } from "react";
+import Link from "next/link";
+import { User } from "@supabase/supabase-js";
+import { createClient } from "@/utils/supabase/client";
+import { atom, useAtomValue, useSetAtom } from "jotai";
+
+import { Facebook, Instagram, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { createClient } from "@/utils/supabase/client";
-import { User } from "@supabase/supabase-js";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+
+export const userAtom = atom<User | null>(null);
 
 export default function Root() {
-  const [user, setUser] = useState<User | null>();
+  const user = useAtomValue<User | null>(userAtom);
+  const setUser = useSetAtom<any>(userAtom);
 
   async function getUserSession() {
     const supabase = createClient();
     const response = await supabase.auth.getUser();
-    console.log(response.data);
     setUser(response.data.user);
   }
 

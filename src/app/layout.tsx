@@ -31,7 +31,7 @@ export default function RootLayout({
           >
             <UserProfile />
             {children}
-            <Toaster position="bottom-center" closeButton />
+            <Toaster position="bottom-center" closeButton richColors />
           </ThemeProvider>
         </JotaiProvider>
       </body>

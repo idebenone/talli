@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest } from "next/server";
 
+/* create a new event */
 export async function POST(request: NextRequest) {
     const supabase = createClient();
     const body = await request.json()
@@ -12,6 +13,9 @@ export async function POST(request: NextRequest) {
     return new Response(JSON.stringify({ message: "Event has been created" }), { status: 201 });
 }
 
+/* fetch all events where an user exists */
+/* currently its fetching only events created by the user i,e owner */
+/* TODO -> fetch other events where the user exists */
 export async function GET(request: NextRequest) {
     const supabase = createClient();
     const { searchParams } = new URL(request.url);

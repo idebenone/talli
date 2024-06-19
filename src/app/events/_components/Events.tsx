@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Locate, MapPin, Pin, PlusCircle } from "lucide-react";
+import { Link2, Locate, MapPin, Pin, PlusCircle } from "lucide-react";
 import Link from "next/link";
+import { MouseEvent } from "react";
+import { toast } from "sonner";
 
 interface EventsProps {
   events: any[];
@@ -8,6 +10,12 @@ interface EventsProps {
 }
 
 const Events: React.FC<EventsProps> = ({ events, setCreateEventState }) => {
+  function handleCopyEventLink(event: MouseEvent, event_id: string) {
+    event.preventDefault();
+    navigator.clipboard.writeText(`${location.origin}/invite/${event_id}`);
+    toast.success("Link has been copied!");
+  }
+
   return (
     <>
       <div className="py-6 lg:py-12 flex justify-between items-center">
@@ -27,16 +35,22 @@ const Events: React.FC<EventsProps> = ({ events, setCreateEventState }) => {
             <Link href={`/events/${event.event_id}`}>
               <div
                 key={index}
-                className="p-4 border rounded-md cursor-pointer hover:bg-muted transition-all duration-500"
+                className="p-4 border rounded-md cursor-pointer hover:bg-muted transition-all duration-500 group"
               >
                 <div className="flex justify-between items-center">
                   <p className="">{event.event_name}</p>
-                  <span className="flex items-center gap-1">
+                  <Link2
+                    className="h-4 w-4 text-muted-foreground cursor-pointer hidden group-hover:block"
+                    onClick={(_event) =>
+                      handleCopyEventLink(_event, event.event_id)
+                    }
+                  />
+                  {/* <span className="flex items-center gap-1">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
                     <p className="text-xs text-muted-foreground">
                       {event.event_location}
                     </p>
-                  </span>
+                  </span> */}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {event.event_description}

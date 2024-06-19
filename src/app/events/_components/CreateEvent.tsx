@@ -33,6 +33,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useAtomValue } from "jotai";
+import { userAtom } from "@/components/UserProfile";
 
 interface CreateEventProps {
   setCreateEventState: (state: boolean) => void;
@@ -43,11 +45,13 @@ const formSchema = z.object({
   event_description: z.string().max(100),
   event_location: z.string(),
   event_type: z.string(),
-  event_start: z.string(),
-  event_end: z.string(),
+  // event_start: z.string(),
+  // event_end: z.string(),
 });
 
 const CreateEvent: React.FC<CreateEventProps> = ({ setCreateEventState }) => {
+  const user = useAtomValue(userAtom);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,14 +59,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({ setCreateEventState }) => {
       event_description: "",
       event_location: "",
       event_type: "",
-      event_start: "",
-      event_end: "",
+      // event_start: "",
+      // event_end: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await axios.post("/api/events", { ...values });
+      await axios.post("/api/events", { event_owner: user?.id, ...values });
       toast.success("Event has been created!");
       setCreateEventState(false);
     } catch (error) {
@@ -109,7 +113,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({ setCreateEventState }) => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="event_type"
@@ -132,7 +135,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({ setCreateEventState }) => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="event_description"
@@ -145,8 +147,8 @@ const CreateEvent: React.FC<CreateEventProps> = ({ setCreateEventState }) => {
               </FormItem>
             )}
           />
-
-          <div className="flex gap-2">
+          /* Scehma isnt setup yet */
+          {/* <div className="flex gap-2">
             <FormField
               control={form.control}
               name="event_start"
@@ -228,8 +230,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({ setCreateEventState }) => {
                 </FormItem>
               )}
             />
-          </div>
-
+          </div> */}
           <div className="flex justify-end">
             <Button type="submit">Create</Button>
           </div>

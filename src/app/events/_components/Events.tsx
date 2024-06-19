@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { Locate, MapPin, Pin, PlusCircle } from "lucide-react";
 import Link from "next/link";
 
 interface EventsProps {
@@ -29,7 +29,15 @@ const Events: React.FC<EventsProps> = ({ events, setCreateEventState }) => {
                 key={index}
                 className="p-4 border rounded-md cursor-pointer hover:bg-muted transition-all duration-500"
               >
-                <p className="">{event.event_name}</p>
+                <div className="flex justify-between items-center">
+                  <p className="">{event.event_name}</p>
+                  <span className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground">
+                      {event.event_location}
+                    </p>
+                  </span>
+                </div>
                 <p className="text-xs text-muted-foreground">
                   {event.event_description}
                 </p>

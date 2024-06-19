@@ -1,26 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import CreateEvent from "./_components/CreateEvent";
+import { useEffect, useState } from "react";
 import Events from "./_components/Events";
+import axios from "axios";
+import { toast } from "sonner";
+import { useAtomValue } from "jotai";
 
-const demoData = [
-  {
-    event_id: "asd76a86fa8s768asf876as",
-    event_name: "Weekend Party",
-    event_description:
-      "Banni makkale party madana, kudidu kudidu marali sayana",
-  },
-  {
-    event_id: "as78fas8a575gsaga785sga",
-    event_name: "Birthday Party",
-    event_description: "Samay Raina's birthday this weekend",
-  },
-];
+import CreateEvent from "./_components/CreateEvent";
+import { userAtom } from "@/components/UserProfile";
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<any[]>(demoData);
+  const user = useAtomValue(userAtom);
+  const [events, setEvents] = useState<any[]>([]);
   const [createEventState, setCreateEventState] = useState<boolean>(false);
+
+  async function handleFetchEvents() {
+    try {
+      if (user) {
+        const response = await axios.get(`/api/events?id=${user?.id}`);
+        setEvents(response.data);
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again later");
+    }
+  }
+  useEffect(() => {
+    handleFetchEvents();
+  }, [user]);
 
   return (
     <div className="h-full flex justify-center">

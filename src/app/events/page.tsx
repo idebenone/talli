@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Events from "./_components/Events";
-import axios from "axios";
 import { toast } from "sonner";
 import { useAtomValue } from "jotai";
 
 import CreateEvent from "./_components/CreateEvent";
 import { userAtom } from "@/components/UserProfile";
+import { getEvents } from "./actions";
 
 export default function EventsPage() {
   const user = useAtomValue(userAtom);
@@ -17,8 +17,8 @@ export default function EventsPage() {
   async function handleFetchEvents() {
     try {
       if (user) {
-        const response = await axios.get(`/api/events?id=${user?.id}`);
-        setEvents(response.data);
+        const response = await getEvents(user?.id);
+        setEvents(response!);
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again later");

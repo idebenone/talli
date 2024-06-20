@@ -13,16 +13,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { getEvent } from "./actions";
 
-export default function Event({ params }: { params: { slug: string } }) {
+export default function Event({ params }: { params: { id: string } }) {
   const [eventDetails, setEventDetails] = useState<any>();
 
   async function getEventDetails() {
     try {
-      const response = await axios.get(`/api/events/${params.slug}`);
-      setEventDetails(response.data[0]);
+      const response = await getEvent(params.id);
+      setEventDetails(response![0]);
     } catch (error) {}
   }
 

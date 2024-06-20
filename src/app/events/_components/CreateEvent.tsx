@@ -4,7 +4,6 @@ import React from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -27,6 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/components/UserProfile";
+import { createEvent } from "../actions";
 
 interface CreateEventProps {
   setCreateEventState: (state: boolean) => void;
@@ -54,7 +54,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({ setCreateEventState }) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await axios.post("/api/events", { event_owner: user?.id, ...values });
+      await createEvent({ event_owner: user?.id, ...values });
       toast.success("Event has been created!");
       setCreateEventState(false);
     } catch (error) {

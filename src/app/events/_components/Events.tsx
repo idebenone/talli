@@ -12,8 +12,9 @@ interface EventsProps {
 const Events: React.FC<EventsProps> = ({ events, setCreateEventState }) => {
   function handleCopyEventLink(event: MouseEvent, event_id: string) {
     event.preventDefault();
-    navigator.clipboard.writeText(`${location.origin}/invite/${event_id}`);
-    toast.success("Link has been copied!");
+    const encoded = btoa(event_id);
+    navigator.clipboard.writeText(`${location.origin}/invite?code=${encoded}`);
+    toast.success("Invite link has been copied!");
   }
 
   return (

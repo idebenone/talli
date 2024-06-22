@@ -10,8 +10,8 @@ export async function addInvitedUser(data: any) {
     if (eventUser?.length === 0) {
         const { error } = await supabase.from("event_users").insert([data])
         if (error) redirect("/error")
-        revalidatePath('/', 'layout');
-        redirect(`/events/${data.event_id}`);
     }
     if (error) redirect("/error")
+    revalidatePath('/', 'layout');
+    redirect(`/events/${data.event_id}`);
 } 

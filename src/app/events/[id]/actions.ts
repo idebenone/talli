@@ -19,14 +19,22 @@ export async function getEventUsers(event_id: string) {
     const { data, error } = await supabase
         .from('event_users')
         .select(`
-            user_role,
+            event_user_id,
+            user_role, 
             users (
+                id,
                 raw_user_meta_data
             )
         `)
         .eq('event_id', event_id);
-    console.log(error)
     if (error) redirect("/error")
     revalidatePath("/", 'layout')
     return data;
+}
+
+export async function removeEventUser(event_user_id: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from("event_users").delete().eq("event_user_id", event_user_id);
+    if (error) redirect("/error")
+    revalidatePath("/", "layout")
 }

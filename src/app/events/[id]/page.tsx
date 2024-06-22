@@ -101,6 +101,7 @@ export default function Event({ params }: { params: { id: string } }) {
 
         <UserListDialog
           event_id={eventDetails?.event_id}
+          event_owner={eventDetails?.event_owner}
           dialogState={userListDialogState}
           setDialogState={() => setUserListDialogState(!userListDialogState)}
         />

@@ -23,7 +23,9 @@ export async function getEventUsers(event_id: string) {
             user_role, 
             users (
                 id,
-                raw_user_meta_data
+                name,
+                email,
+                avatar_url
             )
         `)
         .eq('event_id', event_id);

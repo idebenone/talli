@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Events from "./_components/Events";
 import { toast } from "sonner";
 import { useAtomValue } from "jotai";
 
-import CreateEvent from "./_components/CreateEvent";
 import { userAtom } from "@/components/UserProfile";
+import CreateEvent from "./_components/CreateEvent";
+import EventsList from "./_components/EventsList";
+
 import { getEvents } from "./actions";
+import { Event } from "@/lib/types";
 
 export default function EventsPage() {
   const user = useAtomValue(userAtom);
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [createEventState, setCreateEventState] = useState<boolean>(false);
 
   async function handleFetchEvents() {
@@ -32,7 +34,10 @@ export default function EventsPage() {
     <div className="h-full flex justify-center">
       <div className="p-2 w-full sm:w-3/4 lg:w-2/5">
         {!createEventState && (
-          <Events events={events} setCreateEventState={setCreateEventState} />
+          <EventsList
+            events={events}
+            setCreateEventState={setCreateEventState}
+          />
         )}
 
         {createEventState && (

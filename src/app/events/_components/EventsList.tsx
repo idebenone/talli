@@ -1,15 +1,19 @@
-import { Button } from "@/components/ui/button";
-import { Link2, Locate, MapPin, Pin, PlusCircle } from "lucide-react";
-import Link from "next/link";
 import { MouseEvent } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 
-interface EventsProps {
+import { Link2, PlusCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+interface EventsListProps {
   events: any[];
   setCreateEventState: (state: boolean) => void;
 }
 
-const Events: React.FC<EventsProps> = ({ events, setCreateEventState }) => {
+const EventsList: React.FC<EventsListProps> = ({
+  events,
+  setCreateEventState,
+}) => {
   function handleCopyEventLink(event: MouseEvent, event_id: string) {
     event.preventDefault();
     const encoded = btoa(event_id);
@@ -46,12 +50,6 @@ const Events: React.FC<EventsProps> = ({ events, setCreateEventState }) => {
                       handleCopyEventLink(_event, event.event_id)
                     }
                   />
-                  {/* <span className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <p className="text-xs text-muted-foreground">
-                      {event.event_location}
-                    </p>
-                  </span> */}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {event.event_description}
@@ -71,4 +69,4 @@ const Events: React.FC<EventsProps> = ({ events, setCreateEventState }) => {
   );
 };
 
-export default Events;
+export default EventsList;

@@ -1,5 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Link from "next/link";
+
+import { getEvent } from "./actions";
+
+import { toast } from "sonner";
 import {
   BadgeIndianRupee,
   BarChart,
@@ -15,14 +21,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
-import { getEvent } from "./actions";
 import UserListDialog from "./_components/UsersListDialog";
-import Link from "next/link";
-import { toast } from "sonner";
+import { Event } from "@/lib/types";
 
-export default function Event({ params }: { params: { id: string } }) {
-  const [eventDetails, setEventDetails] = useState<any>();
+export default function EventPage({ params }: { params: { id: string } }) {
+  const [eventDetails, setEventDetails] = useState<Event | null>();
   const [userListDialogState, setUserListDialogState] =
     useState<boolean>(false);
 
@@ -46,66 +49,68 @@ export default function Event({ params }: { params: { id: string } }) {
 
   return (
     <div className="h-full flex justify-center">
-      <div className="p-2 w-full sm:w-3/4 lg:w-2/5">
-        <div id="header" className="py-4 flex justify-between items-start">
-          <div className="flex gap-4">
-            <Link href="/events">
-              <ChevronLeft className="h-5 w-5 mt-3 cursor-pointer" />
-            </Link>
-            <div className="flex flex-col">
-              <p className="text-4xl font-semibold">
-                {eventDetails?.event_name}
-              </p>
-              <p className="mt-4 italic text-xs text-muted-foreground">
-                {eventDetails?.event_description}
-              </p>
+      {eventDetails && (
+        <div className="p-2 w-full sm:w-3/4 lg:w-2/5">
+          <div id="header" className="py-4 flex justify-between items-start">
+            <div className="flex gap-4">
+              <Link href="/events">
+                <ChevronLeft className="h-5 w-5 mt-3 cursor-pointer" />
+              </Link>
+              <div className="flex flex-col">
+                <p className="text-4xl font-semibold">
+                  {eventDetails?.event_name}
+                </p>
+                <p className="mt-4 italic text-xs text-muted-foreground">
+                  {eventDetails?.event_description}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-center mt-3">
+              <LucideLink
+                className="w-4 h-4 cursor-pointer"
+                onClick={(_event) =>
+                  handleCopyEventLink(_event, eventDetails?.event_id)
+                }
+              />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <CirclePlus className="w-4 h-4 cursor-pointer" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem className="flex items-center gap-2">
+                    <BarChart className="h-4 w-4" />
+                    <p>Poll</p>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center gap-2">
+                    <Hourglass className="h-4 w-4" />
+                    <p>Countdown</p>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center gap-2">
+                    <BadgeIndianRupee className="h-4 w-4" />
+                    <p>Payment</p>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <User
+                className="w-4 h-4 cursor-pointer"
+                onClick={() => setUserListDialogState(!userListDialogState)}
+              />
             </div>
           </div>
 
-          <div className="flex gap-4 items-center mt-3">
-            <LucideLink
-              className="w-4 h-4 cursor-pointer"
-              onClick={(_event) =>
-                handleCopyEventLink(_event, eventDetails?.event_id)
-              }
-            />
+          <div className="overflow-auto"></div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <CirclePlus className="w-4 h-4 cursor-pointer" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  <BarChart className="h-4 w-4" />
-                  <p>Poll</p>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  <Hourglass className="h-4 w-4" />
-                  <p>Countdown</p>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  <BadgeIndianRupee className="h-4 w-4" />
-                  <p>Payment</p>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <User
-              className="w-4 h-4 cursor-pointer"
-              onClick={() => setUserListDialogState(!userListDialogState)}
-            />
-          </div>
+          <UserListDialog
+            event_id={eventDetails?.event_id}
+            event_owner={eventDetails?.event_owner}
+            dialogState={userListDialogState}
+            setDialogState={() => setUserListDialogState(!userListDialogState)}
+          />
         </div>
-
-        <div className="overflow-auto"></div>
-
-        <UserListDialog
-          event_id={eventDetails?.event_id}
-          event_owner={eventDetails?.event_owner}
-          dialogState={userListDialogState}
-          setDialogState={() => setUserListDialogState(!userListDialogState)}
-        />
-      </div>
+      )}
     </div>
   );
 }

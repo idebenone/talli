@@ -6,6 +6,7 @@ import { useAtomValue } from "jotai";
 
 import { addInvitedUser } from "./actions";
 import { userAtom } from "@/components/UserProfile";
+import { toast } from "sonner";
 
 export default function InvitePage() {
   const user = useAtomValue(userAtom);
@@ -21,7 +22,9 @@ export default function InvitePage() {
           user_role: "user",
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Something went wrong. Please try again later");
+    }
   }
 
   useEffect(() => {

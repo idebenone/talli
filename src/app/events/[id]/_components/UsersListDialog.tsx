@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/components/UserProfile";
 
-import { getEventUsers, removeEventUser } from "../actions";
+import { getEventUsers, removeEventUser } from "../../actions";
 import { EventUsers } from "@/lib/types";
 
 import { CircleX } from "lucide-react";
@@ -93,7 +93,7 @@ const UserListDialog: React.FC<UserListDialogProps> = ({
                   </div>
                 </div>
 
-                <p className="text-xs text-green-400 px-1 py-0.5 border border-green-500 rounded-md">
+                <p className="text-xs text-green-400 italic">
                   {_user.user_role}
                 </p>
 

@@ -5,7 +5,14 @@ export interface SavedUser {
     avatar_url: string
 }
 
-export interface CreateEvent { }
+export interface CreateEvent {
+    event_owner: string,
+    event_name: string
+    event_description: string
+    event_location: string
+    event_target?: string
+    event_theme: string
+}
 
 export interface Event {
     event_id: string
@@ -13,7 +20,8 @@ export interface Event {
     event_name: string
     event_description: string
     event_location: string
-    event_type: string
+    event_target: string
+    event_theme: string
     created_at: string
     modified_at: string
 }
@@ -38,8 +46,8 @@ export interface Poll {
     user_id: string
     event_id: string
     poll_content: string
-    created_at: string
-    modified_at: string
+    created_at: Date
+    modified_at: Date
 }
 
 export interface PollChoices {
@@ -47,25 +55,7 @@ export interface PollChoices {
     poll_id: string
     poll_choice: string
     vote_count: string
-    creatd_at: string
-    modified_at: string
-}
-
-export interface CreateCountDown {
-    event_id: string
-    cd_title: string
-    cd_description: string
-    cd_type: string
-    cd_target: Date
-}
-
-export interface CountDown {
-    cd_id: string
-    event_id: string
-    cd_title: string
-    cd_description: string
-    cd_type: string
-    cd_target: string
-    created_at: Date
+    creatd_at: Date
     modified_at: Date
 }
+

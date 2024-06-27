@@ -1,12 +1,12 @@
-import { CountDown } from "@/lib/types";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 interface CountDownComponentProps {
-  countdown: CountDown;
+  event_target: string;
 }
 
 const CountDownComponent: React.FC<CountDownComponentProps> = ({
-  countdown,
+  event_target,
 }) => {
   const calculateRemainingTime = (targetDate: string): number => {
     const target = new Date(targetDate).getTime();
@@ -14,21 +14,10 @@ const CountDownComponent: React.FC<CountDownComponentProps> = ({
     return Math.max(0, Math.floor((target - now) / 1000));
   };
 
+  const [expand, setExpand] = useState<boolean>(false);
   const [remainingTime, setRemainingTime] = useState(
-    calculateRemainingTime(countdown.cd_target)
+    calculateRemainingTime(event_target)
   );
-
-  useEffect(() => {
-    if (remainingTime <= 0) {
-      return;
-    }
-
-    const intervalId = setInterval(() => {
-      setRemainingTime(calculateRemainingTime(countdown.cd_target));
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [remainingTime]);
 
   const formatTime = (totalSeconds: number) => {
     const d = Math.floor(totalSeconds / (24 * 60 * 60));
@@ -46,28 +35,57 @@ const CountDownComponent: React.FC<CountDownComponentProps> = ({
     };
   };
 
-  return (
-    <div className="flex flex-col justify-center items-center border p-6">
-      <p className="text-center">{countdown.cd_title}</p>
-      <p className="text-center text-muted-foreground">
-        {countdown.cd_description}
-      </p>
+  useEffect(() => {
+    if (remainingTime <= 0) {
+      return;
+    }
 
-      <div className="flex gap-2 mt-4">
-        {Object.entries(formatTime(remainingTime)).map(([key, value]) => (
-          <div
-            className="animate-in border border-muted p-2 w-20 flex gap-2 justify-center items-baseline"
-            key={key}
-          >
-            <p className="text-lg">
-              {value < 10 && 0}
-              {value}
-            </p>
-            <p className="text-xs text-muted-foreground">{key}</p>
+    const intervalId = setInterval(() => {
+      setRemainingTime(calculateRemainingTime(event_target));
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [remainingTime, event_target]);
+
+  return (
+    <>
+      {event_target && (
+        <div
+          className={`relative flex flex-col justify-center items-center p-6 group transition-all duration-300 ease-in-out overflow-hidden ${
+            expand ? "border h-32" : "border border-background h-16"
+          }`}
+        >
+          <div className="flex gap-2 ">
+            {Object.entries(formatTime(remainingTime)).map(([key, value]) => (
+              <div
+                className={`${
+                  expand ? "p-2 border border-muted w-20" : "border-none w-12"
+                } flex gap-1 justify-center items-baseline transition-all duration-300 ease-in-out`}
+                key={key}
+              >
+                <p className={`text-lg ${expand ? "" : "text-base"}`}>
+                  {value < 10 && 0}
+                  {value}
+                </p>
+                <p className="text-xs text-muted-foreground">{key}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
+
+          {expand ? (
+            <ChevronUp
+              onClick={() => setExpand(false)}
+              className="absolute right-4 top-14 h-4 w-4 cursor-pointer text-muted-foreground hidden group-hover:block"
+            />
+          ) : (
+            <ChevronDown
+              onClick={() => setExpand(true)}
+              className="absolute right-2 w-4 h-4 cursor-pointer text-muted-foreground "
+            />
+          )}
+        </div>
+      )}
+    </>
   );
 };
 

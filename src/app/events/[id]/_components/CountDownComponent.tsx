@@ -1,73 +1,87 @@
-import { CountDown } from "@/lib/types";
 import React, { useState, useEffect } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { calculateRemainingTime, formatTime } from "@/lib/utils";
+import { THEMES } from "@/utils/themes";
 
 interface CountDownComponentProps {
-  countdown: CountDown;
+  event_target: string;
+  event_theme: string;
 }
 
 const CountDownComponent: React.FC<CountDownComponentProps> = ({
-  countdown,
+  event_target,
+  event_theme,
 }) => {
-  const calculateRemainingTime = (targetDate: string): number => {
-    const target = new Date(targetDate).getTime();
-    const now = new Date().getTime();
-    return Math.max(0, Math.floor((target - now) / 1000));
-  };
-
   const [remainingTime, setRemainingTime] = useState(
-    calculateRemainingTime(countdown.cd_target)
+    calculateRemainingTime(event_target)
   );
+  const [expand, setExpand] = useState<boolean>(false);
+  const [theme, setTheme] = useState<any>();
 
   useEffect(() => {
-    if (remainingTime <= 0) {
-      return;
-    }
+    if (remainingTime <= 0) return;
 
     const intervalId = setInterval(() => {
-      setRemainingTime(calculateRemainingTime(countdown.cd_target));
+      setRemainingTime(calculateRemainingTime(event_target));
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [remainingTime]);
+  }, [remainingTime, event_target]);
 
-  const formatTime = (totalSeconds: number) => {
-    const d = Math.floor(totalSeconds / (24 * 60 * 60));
-    totalSeconds %= 24 * 60 * 60;
-    const hr = Math.floor(totalSeconds / (60 * 60));
-    totalSeconds %= 60 * 60;
-    const min = Math.floor(totalSeconds / 60);
-    const sec = totalSeconds % 60;
-
-    return {
-      d,
-      hr,
-      min,
-      sec,
-    };
-  };
+  useEffect(() => {
+    setTheme(THEMES.find((theme) => theme.value === event_theme));
+  }, [event_theme]);
 
   return (
-    <div className="flex flex-col justify-center items-center border p-6">
-      <p className="text-center">{countdown.cd_title}</p>
-      <p className="text-center text-muted-foreground">
-        {countdown.cd_description}
-      </p>
-
-      <div className="flex gap-2 mt-4">
-        {Object.entries(formatTime(remainingTime)).map(([key, value]) => (
-          <div
-            className="animate-in border border-muted p-2 w-20 flex gap-2 justify-center items-baseline"
-            key={key}
-          >
-            <p className="text-lg">
-              {value < 10 && 0}
-              {value}
-            </p>
-            <p className="text-xs text-muted-foreground">{key}</p>
+    <>
+      {event_target && (
+        <div
+          style={{
+            backgroundImage: theme?.bg ? `url(${theme.bg})` : undefined,
+          }}
+          className={`relative flex flex-col justify-center items-center p-6 group transition-all duration-300 ease-in-out overflow-hidden
+            ${theme?.font?.className!}
+            ${expand ? "h-32" : "h-16 contrast-75 grayscale"}`}
+        >
+          <div className="flex gap-2.5 ">
+            {Object.entries(formatTime(remainingTime)).map(([key, value]) => (
+              <div
+                className={`${
+                  expand ? "p-2 w-fit" : "border-none w-fit"
+                } flex gap-1 justify-center items-baseline transition-all duration-300 ease-in-out`}
+                key={key}
+              >
+                <p
+                  className={`${theme?.font_weight} ${
+                    expand ? theme?.font_size_expanded! : theme?.font_size!
+                  }`}
+                >
+                  {value < 10 && 0}
+                  {value}
+                </p>
+                <p
+                  className={`${theme?.font_weight} text-xs text-muted-foreground`}
+                >
+                  {key}
+                </p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
+
+          {expand ? (
+            <ChevronUp
+              onClick={() => setExpand(false)}
+              className="absolute right-4 top-14 h-4 w-4 cursor-pointer text-muted-foreground hidden group-hover:block"
+            />
+          ) : (
+            <ChevronDown
+              onClick={() => setExpand(true)}
+              className="absolute right-2 w-4 h-4 cursor-pointer text-muted-foreground "
+            />
+          )}
+        </div>
+      )}
+    </>
   );
 };
 

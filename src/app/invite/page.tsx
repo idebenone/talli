@@ -1,9 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useAtomValue } from "jotai";
 import { useRouter } from "next/navigation";
+import debounce from "lodash/debounce";
 
 import { addInvitedUser } from "./actions";
 import { userAtom } from "@/components/UserProfile";
@@ -15,25 +16,31 @@ export default function InvitePage() {
   const searchParams = useSearchParams();
   const eventId = searchParams.get("code");
 
-  async function handleAddUser() {
-    try {
-      if (eventId) {
-        await addInvitedUser({
-          event_id: atob(eventId),
-          user_id: user?.id,
-          user_role: "user",
-        });
+  const handleAddUser = useCallback(
+    debounce(async () => {
+      try {
+        if (eventId && user) {
+          await addInvitedUser({
+            event_id: atob(eventId),
+            user_id: user.id,
+            user_role: "user",
+          });
 
-        toast.success("Yay! You are a part of the cult now.");
+          toast.success("Yay! You are a part of the cult now.");
+        }
+      } catch (error) {
+        router.push("/invite/error");
       }
-    } catch (error) {
-      router.push("/invite/error");
-    }
-  }
+    }, 5000),
+    [eventId, user, router]
+  );
 
   useEffect(() => {
     if (user && eventId) handleAddUser();
-  }, [user, eventId]);
+    return () => {
+      handleAddUser.cancel();
+    };
+  }, [user, eventId, handleAddUser]);
 
   return (
     <div className="h-full flex justify-center items-center">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { useAtomValue } from "jotai";
@@ -16,19 +16,18 @@ import Link from "next/link";
 export default function EventsPage() {
   const user = useAtomValue(userAtom);
   const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isPending, setTransition] = useTransition();
 
-  async function handleFetchEvents() {
+  function handleFetchEvents() {
     if (!user) return;
-    setLoading(true);
-    try {
-      const response = await getEvents(user.id);
-      setEvents(response || []);
-    } catch (error) {
-      toast.error("Something went wrong. Please try again later");
-    } finally {
-      setLoading(false);
-    }
+    setTransition(async () => {
+      try {
+        const response = await getEvents(user.id);
+        setEvents(response || []);
+      } catch (error) {
+        toast.error("Something went wrong. Please try again later");
+      }
+    });
   }
 
   function handleCopyEventLink(event: React.MouseEvent, event_id: string) {
@@ -62,9 +61,9 @@ export default function EventsPage() {
           </Link>
         </div>
 
-        {loading && <Skeleton className="w-full py-36" />}
+        {isPending && <Skeleton className="w-full py-36" />}
 
-        {!loading && events.length > 0 && (
+        {!isPending && events.length > 0 && (
           <div className="flex flex-col gap-2">
             {events.map((event, index) => (
               <Link href={`/events/${event.event_id}`} key={index}>
@@ -88,8 +87,8 @@ export default function EventsPage() {
           </div>
         )}
 
-        {!loading && events.length === 0 && (
-          <div className="py-36 flex justify-center items-center border border-dotted rounded-md">
+        {!isPending && events.length === 0 && (
+          <div className="py-36 flex justify-center items-center">
             <p className="font-medium text-muted-foreground">No events found</p>
           </div>
         )}

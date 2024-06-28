@@ -71,35 +71,36 @@ const UserListDialog: React.FC<UserListDialogProps> = ({
           </div>
         )}
         <ScrollArea className="h-[400px]">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             {userList.map((_user, index) => (
               <div
                 key={index}
-                className="relative p-3 flex justify-between items-start cursor-pointer hover:bg-muted rounded-md duration-500 group"
+                className="flex justify-between items-start cursor-pointer group hover:bg-muted hover:p-3 duration-100 group"
               >
                 <div className="flex items-center gap-4">
                   <Image
                     height="400"
                     width="400"
-                    className="rounded-full h-10 w-10"
+                    className="h-10 w-10 grayscale-100 group-hover:grayscale-0"
                     src={_user.users.avatar_url}
                     alt={_user.users.name}
                   />
                   <div className="flex flex-col">
-                    <p>{_user.users.name}</p>
+                    <div className="flex gap-3 items-center">
+                      <p>{_user.users.name}</p>
+                      <p className="text-xs text-green-400 italic">
+                        {_user.user_role}
+                      </p>
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       {_user.users.email}
                     </p>
                   </div>
                 </div>
 
-                <p className="text-xs text-green-400 italic">
-                  {_user.user_role}
-                </p>
-
                 {user?.id === event_owner && _user.users.id !== event_owner && (
                   <CircleX
-                    className="absolute -top-1 -right-1 h-4 w-4 hidden group-hover:block transition-all duration-500 text-muted-foreground hover:text-white"
+                    className=" h-4 w-4 hidden group-hover:block transition-all duration-500 text-muted-foreground hover:text-white"
                     onClick={() => handleRemoveEventUser(_user.event_user_id)}
                   />
                 )}

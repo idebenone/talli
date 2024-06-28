@@ -10,10 +10,18 @@ import {
   BarChart,
   ChevronLeft,
   CirclePlus,
-  Hourglass,
+  EllipsisVertical,
   Link as LucideLink,
+  SquareChevronUp,
+  Trash,
   User,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverContent,
@@ -22,17 +30,26 @@ import {
 import { toast } from "sonner";
 
 import UserListDialog from "./UsersListDialog";
-import CreateCountDownDialog from "./CreateCountDownDialog";
 import CreatePollDialog from "./CreatePollDialog";
+import { PopoverClose } from "@radix-ui/react-popover";
+import { useAtomValue } from "jotai";
+import { userAtom } from "@/components/UserProfile";
+import { deleteEvent } from "../../actions";
+import { useRouter } from "next/navigation";
 
 interface EventHeaderProps {
   eventDetails: Event | null;
+  setEditEvent: () => void;
 }
 
-const EventHeader: React.FC<EventHeaderProps> = ({ eventDetails }) => {
+const EventHeader: React.FC<EventHeaderProps> = ({
+  eventDetails,
+  setEditEvent,
+}) => {
+  const user = useAtomValue(userAtom);
+  const router = useRouter();
+
   const [userListDialogState, setUserListDialogState] =
-    useState<boolean>(false);
-  const [createCountDownDialogState, setCreatCountDownDialogState] =
     useState<boolean>(false);
   const [createPollDialogState, setCreatePollDialogState] =
     useState<boolean>(false);
@@ -42,6 +59,18 @@ const EventHeader: React.FC<EventHeaderProps> = ({ eventDetails }) => {
     const encoded = btoa(event_id);
     navigator.clipboard.writeText(`${location.origin}/invite?code=${encoded}`);
     toast.success("Invite link has been copied!");
+  }
+
+  async function handleDeleteEvent() {
+    try {
+      if (eventDetails) {
+        await deleteEvent(eventDetails.event_id);
+        toast.success("Event has been deleted!");
+        router.push("/events");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again later");
+    }
   }
 
   return (
@@ -74,7 +103,7 @@ const EventHeader: React.FC<EventHeaderProps> = ({ eventDetails }) => {
                 <PopoverTrigger>
                   <CirclePlus className="w-4 h-4 cursor-pointer" />
                 </PopoverTrigger>
-                <PopoverContent className="flex flex-col gap-1.5">
+                <PopoverContent className="w-40 flex flex-col gap-1.5">
                   <div
                     className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500"
                     onClick={() =>
@@ -84,15 +113,7 @@ const EventHeader: React.FC<EventHeaderProps> = ({ eventDetails }) => {
                     <BarChart className="h-4 w-4" />
                     <p>Poll</p>
                   </div>
-                  <div
-                    className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500"
-                    onClick={() =>
-                      setCreatCountDownDialogState(!createCountDownDialogState)
-                    }
-                  >
-                    <Hourglass className="h-4 w-4" />
-                    <p>Countdown</p>
-                  </div>
+
                   <div className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500">
                     <BadgeIndianRupee className="h-4 w-4" />
                     <p>Payment</p>
@@ -104,6 +125,34 @@ const EventHeader: React.FC<EventHeaderProps> = ({ eventDetails }) => {
                 className="w-4 h-4 cursor-pointer"
                 onClick={() => setUserListDialogState(!userListDialogState)}
               />
+
+              {user?.id === eventDetails.event_owner && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <EllipsisVertical className="h-4 w-4 cursor-pointer" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <div
+                        className="flex items-center gap-2"
+                        onClick={setEditEvent}
+                      >
+                        <SquareChevronUp className="mb-0.5 h-4 w-4" />
+                        <p>Update</p>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <div
+                        className="flex items-center gap-2 text-red-600"
+                        onClick={handleDeleteEvent}
+                      >
+                        <Trash className="mb-1 h-4 w-4" />
+                        <p>Delete</p>
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </div>
 
@@ -112,14 +161,6 @@ const EventHeader: React.FC<EventHeaderProps> = ({ eventDetails }) => {
             event_owner={eventDetails?.event_owner}
             dialogState={userListDialogState}
             setDialogState={() => setUserListDialogState(!userListDialogState)}
-          />
-
-          <CreateCountDownDialog
-            event_id={eventDetails?.event_id}
-            dialogState={createCountDownDialogState}
-            setDialogState={() =>
-              setCreatCountDownDialogState(!createCountDownDialogState)
-            }
           />
 
           <CreatePollDialog

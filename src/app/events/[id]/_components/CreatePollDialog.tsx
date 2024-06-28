@@ -1,9 +1,11 @@
+import { useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/components/UserProfile";
+import { createPoll } from "../../actions";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,10 +22,10 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
 import { PlusCircle, X } from "lucide-react";
-import { createPoll } from "../../actions";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
+import Spinner from "@/components/ui/spinner";
 
 interface CreatePollDialogProps {
   event_id: string;
@@ -48,6 +50,7 @@ const CreatePollDialog: React.FC<CreatePollDialogProps> = ({
   setDialogState,
 }) => {
   const user = useAtomValue(userAtom);
+  const [isPending, setTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,13 +68,15 @@ const CreatePollDialog: React.FC<CreatePollDialogProps> = ({
     name: "poll_choices",
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      if (user?.id)
-        await createPoll({ user_id: user?.id, event_id, ...values });
-    } catch (error) {
-      toast.error("Something went wrong. Please try again later");
-    }
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    setTransition(async () => {
+      try {
+        await createPoll({ user_id: user?.id!, event_id, ...values });
+        toast.success("Poll has been created");
+      } catch (error) {
+        toast.error("Something went wrong. Please try again later");
+      }
+    });
   }
 
   return (
@@ -139,7 +144,16 @@ const CreatePollDialog: React.FC<CreatePollDialogProps> = ({
             </Button>
 
             <div className="flex justify-end">
-              <Button type="submit">Create Poll</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
+                  <div className="flex items-center gap-3">
+                    <p>In progress</p>
+                    <Spinner />
+                  </div>
+                ) : (
+                  <p>Create</p>
+                )}
+              </Button>
             </div>
           </form>
         </Form>

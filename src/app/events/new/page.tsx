@@ -2,13 +2,21 @@
 
 import React, { useTransition } from "react";
 import { z } from "zod";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { useAtomValue } from "jotai";
+
+import { createEvent } from "../actions";
+import { userAtom } from "@/components/UserProfile";
+import { CreateEvent } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { THEMES } from "@/utils/themes";
 
 import { ArrowLeft, CalendarIcon } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -30,15 +38,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Spinner from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { useAtomValue } from "jotai";
-import { userAtom } from "@/components/UserProfile";
-import { createEvent } from "../actions";
-import Link from "next/link";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import Spinner from "@/components/spinner";
-import { CreateEvent } from "@/lib/types";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   event_name: z
@@ -159,9 +161,11 @@ export default function CreateEventPage() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="theme_1">Theme 1</SelectItem>
-                      <SelectItem value="theme_2">Theme 2</SelectItem>
-                      <SelectItem value="theme_3">Theme 3</SelectItem>
+                      {THEMES.map((theme, _) => (
+                        <SelectItem value={theme.value} key={theme.code}>
+                          {theme.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

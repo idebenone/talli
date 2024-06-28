@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useTransition } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { updateEvent } from "../../actions";
 
 import { cn } from "@/lib/utils";
 import { Event } from "@/lib/types";
+import { THEMES } from "@/utils/themes";
 
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -36,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Spinner from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
@@ -54,6 +56,7 @@ interface EditEventProps {
 
 const EditEvent: React.FC<EditEventProps> = ({ event, setEditEvent }) => {
   const user = useAtomValue(userAtom);
+  const [isPending, setTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -66,12 +69,12 @@ const EditEvent: React.FC<EditEventProps> = ({ event, setEditEvent }) => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      if (user?.id) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    setTransition(async () => {
+      try {
         await updateEvent({
           event_id: event.event_id,
-          event_owner: user.id,
+          event_owner: user?.id!,
           ...values,
           event_target: values.event_target.toISOString(),
           created_at: event.created_at,
@@ -80,10 +83,10 @@ const EditEvent: React.FC<EditEventProps> = ({ event, setEditEvent }) => {
 
         toast.success("Event has been updated!");
         setEditEvent();
+      } catch (error) {
+        toast.error("Something went wrong. Please try again later!");
       }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again later!");
-    }
+    });
   }
 
   useEffect(() => {
@@ -97,7 +100,7 @@ const EditEvent: React.FC<EditEventProps> = ({ event, setEditEvent }) => {
   }, [event]);
 
   return (
-    <div className="mt-4 md:p-4 xl:p-8">
+    <div className="md:px-4 xl:px-8">
       <p className="mb-4">Edit</p>
       <Form {...form}>
         <form
@@ -189,7 +192,7 @@ const EditEvent: React.FC<EditEventProps> = ({ event, setEditEvent }) => {
               <FormItem>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={event.event_theme}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -197,9 +200,11 @@ const EditEvent: React.FC<EditEventProps> = ({ event, setEditEvent }) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="theme_1">Theme 1</SelectItem>
-                    <SelectItem value="theme_2">Theme 2</SelectItem>
-                    <SelectItem value="theme_3">Theme 3</SelectItem>
+                    {THEMES.map((theme, _) => (
+                      <SelectItem value={theme.value} key={theme.code}>
+                        {theme.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -208,10 +213,24 @@ const EditEvent: React.FC<EditEventProps> = ({ event, setEditEvent }) => {
           />
 
           <div className="flex gap-2 justify-end">
-            <Button type="submit" variant="outline" onClick={setEditEvent}>
+            <Button
+              type="submit"
+              variant="outline"
+              onClick={setEditEvent}
+              disabled={isPending}
+            >
               Cancel
             </Button>
-            <Button type="submit">Update</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
+                <div className="flex items-center gap-3">
+                  <p>In progress</p>
+                  <Spinner />
+                </div>
+              ) : (
+                <p>Update</p>
+              )}
+            </Button>
           </div>
         </form>
       </Form>

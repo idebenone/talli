@@ -31,7 +31,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     getEventDetails();
-  }, []);
+  }, [params.id]);
 
   return (
     <div className="h-full flex justify-center">
@@ -49,6 +49,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
                   {eventDetails.event_target && (
                     <CountDownComponent
                       event_target={eventDetails.event_target}
+                      event_theme={eventDetails.event_theme}
                     />
                   )}
                 </div>

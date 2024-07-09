@@ -1,4 +1,4 @@
-import { ps2p, bungeeHairline } from "./fonts";
+import { ps2p, bungeeHairline, bungee } from "./fonts";
 
 export const THEMES = [
     {
@@ -9,7 +9,7 @@ export const THEMES = [
         font_size: "text-base",
         font_size_expanded: "text-xl",
         font_weight: "",
-        bg: "/retro.gif"
+        bg: "/themes/retro.gif"
     },
     {
         name: "Bungee",
@@ -18,17 +18,17 @@ export const THEMES = [
         font: bungeeHairline,
         font_size: "text-xl",
         font_size_expanded: "text-3xl",
-        font_weight: "font-bold",
-        bg: "/bungee.jpg"
+        font_weight: "font-extrabold",
+        bg: "/themes/bungee.jpg"
     },
     {
         name: "Summer",
         code: "summer_2024",
         value: "summer2024",
-        font: "sad",
-        font_size: "text-base",
-        fontSize: "",
+        font: bungee,
+        font_size: "text-lg",
+        font_size_expanded: "text-3xl",
         font_weight: "",
-        bg: ""
+        bg: "/themes/summer.jpg"
     },
 ]

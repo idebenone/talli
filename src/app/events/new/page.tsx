@@ -3,16 +3,17 @@
 import React, { useTransition } from "react";
 import { z } from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { useAtomValue } from "jotai";
 
 import { createEvent } from "../actions";
-import { userAtom } from "@/components/UserProfile";
 import { CreateEvent } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { THEMES } from "@/utils/themes";
+import { userAtom } from "@/utils/atoms";
 
 import { ArrowLeft, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ const formSchema = z.object({
 });
 
 export default function CreateEventPage() {
+  const router = useRouter();
   const user = useAtomValue(userAtom);
   const [isPending, setTransition] = useTransition();
 
@@ -71,19 +73,18 @@ export default function CreateEventPage() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     setTransition(async () => {
       try {
-        if (user?.id) {
-          const { event_target, ...restValues } = values;
-          const processedValues: CreateEvent = {
-            ...restValues,
-            event_owner: user.id,
-            event_target:
-              event_target instanceof Date
-                ? event_target.toISOString()
-                : undefined,
-          };
-          await createEvent(processedValues);
-          toast.success("Event has been created!");
-        }
+        const { event_target, ...restValues } = values;
+        const processedValues: CreateEvent = {
+          ...restValues,
+          event_owner: user?.id!,
+          event_target:
+            event_target instanceof Date
+              ? event_target.toISOString()
+              : undefined,
+        };
+        await createEvent(processedValues);
+        toast.success("Event has been created!");
+        router.push("/events");
       } catch (error) {
         toast.error("Something went wrong. Please try again later!");
       }

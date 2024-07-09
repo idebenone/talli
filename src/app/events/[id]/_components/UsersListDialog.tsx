@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-
-import { useAtomValue } from "jotai";
-import { userAtom } from "@/components/UserProfile";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import { getEventUsers, removeEventUser } from "../../actions";
+
+import { EventUsersListAtom, userAtom } from "@/utils/atoms";
 import { EventUsers } from "@/lib/types";
 
 import { CircleX } from "lucide-react";
@@ -34,11 +34,13 @@ const UserListDialog: React.FC<UserListDialogProps> = ({
 }) => {
   const user = useAtomValue(userAtom);
   const [userList, setUsersList] = useState<EventUsers[]>([]);
+  const setEventUsers = useSetAtom<any>(EventUsersListAtom);
 
   async function handleGetEventUsers() {
     try {
       const response = await getEventUsers(event_id);
-      setUsersList(response as any);
+      setUsersList(response.data as any);
+      setEventUsers(response.data as any);
     } catch (error) {
       toast.error("Something went wrong. Please try again later");
     }

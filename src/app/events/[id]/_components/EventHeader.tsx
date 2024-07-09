@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAtomValue } from "jotai";
 
+import { deleteEvent } from "../../actions";
+import { userAtom } from "@/utils/atoms";
 import { Event } from "@/lib/types";
 
 import {
@@ -31,11 +35,7 @@ import { toast } from "sonner";
 
 import UserListDialog from "./UsersListDialog";
 import CreatePollDialog from "./CreatePollDialog";
-import { PopoverClose } from "@radix-ui/react-popover";
-import { useAtomValue } from "jotai";
-import { userAtom } from "@/components/UserProfile";
-import { deleteEvent } from "../../actions";
-import { useRouter } from "next/navigation";
+import CreateSplitDialog from "./CreateSplitDialog";
 
 interface EventHeaderProps {
   eventDetails: Event | null;
@@ -52,6 +52,8 @@ const EventHeader: React.FC<EventHeaderProps> = ({
   const [userListDialogState, setUserListDialogState] =
     useState<boolean>(false);
   const [createPollDialogState, setCreatePollDialogState] =
+    useState<boolean>(false);
+  const [createSplitDialogState, setCreateSplitDialogState] =
     useState<boolean>(false);
 
   function handleCopyEventLink(event: React.MouseEvent, event_id: string) {
@@ -103,7 +105,7 @@ const EventHeader: React.FC<EventHeaderProps> = ({
                 <PopoverTrigger>
                   <CirclePlus className="w-4 h-4 cursor-pointer" />
                 </PopoverTrigger>
-                <PopoverContent className="w-40 flex flex-col gap-1.5">
+                <PopoverContent className="w-40 flex flex-col gap-1.5 p-1">
                   <div
                     className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500"
                     onClick={() =>
@@ -114,10 +116,17 @@ const EventHeader: React.FC<EventHeaderProps> = ({
                     <p>Poll</p>
                   </div>
 
-                  <div className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500">
+                  <div
+                    className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500"
+                    onClick={() =>
+                      setCreateSplitDialogState(!createSplitDialogState)
+                    }
+                  >
                     <BadgeIndianRupee className="h-4 w-4" />
-                    <p>Payment</p>
+                    <p>Split</p>
                   </div>
+
+                  <div></div>
                 </PopoverContent>
               </Popover>
 
@@ -127,31 +136,33 @@ const EventHeader: React.FC<EventHeaderProps> = ({
               />
 
               {user?.id === eventDetails.event_owner && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <EllipsisVertical className="h-4 w-4 cursor-pointer" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>
-                      <div
-                        className="flex items-center gap-2"
-                        onClick={setEditEvent}
-                      >
-                        <SquareChevronUp className="mb-0.5 h-4 w-4" />
-                        <p>Update</p>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <div
-                        className="flex items-center gap-2 text-red-600"
-                        onClick={handleDeleteEvent}
-                      >
-                        <Trash className="mb-1 h-4 w-4" />
-                        <p>Delete</p>
-                      </div>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <EllipsisVertical className="h-4 w-4 cursor-pointer" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        <div
+                          className="flex items-center gap-2"
+                          onClick={setEditEvent}
+                        >
+                          <SquareChevronUp className="mb-0.5 h-4 w-4" />
+                          <p>Update</p>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <div
+                          className="flex items-center gap-2 text-red-600"
+                          onClick={handleDeleteEvent}
+                        >
+                          <Trash className="mb-1 h-4 w-4" />
+                          <p>Delete</p>
+                        </div>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </>
               )}
             </div>
           </div>
@@ -168,6 +179,14 @@ const EventHeader: React.FC<EventHeaderProps> = ({
             dialogState={createPollDialogState}
             setDialogState={() =>
               setCreatePollDialogState(!createPollDialogState)
+            }
+          />
+
+          <CreateSplitDialog
+            event_id={eventDetails?.event_id}
+            dialogState={createSplitDialogState}
+            setDialogState={() =>
+              setCreateSplitDialogState(!createSplitDialogState)
             }
           />
         </>

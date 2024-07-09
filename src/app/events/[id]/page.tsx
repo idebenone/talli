@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import Link from "next/link";
+import { useAtomValue } from "jotai";
 
 import { getEvent } from "../actions";
+import { userAtom } from "@/utils/atoms";
 import { Event } from "@/lib/types";
 
 import CountDownComponent from "./_components/CountDownComponent";
-import EventHeader from "./_components/EventHeader";
 import EditEvent from "./_components/EditEvent";
+import EventHeader from "./_components/EventHeader";
+
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import AnnouncementInput from "./_components/AnnouncementInput";
+import EventBody from "./_components/EventBody";
 
 export default function EventPage({ params }: { params: { id: string } }) {
+  const user = useAtomValue(userAtom);
   const [isPending, startTransition] = useTransition();
   const [eventDetails, setEventDetails] = useState<Event | null>(null);
   const [editEvent, setEditEvent] = useState<boolean>(false);
@@ -21,8 +27,10 @@ export default function EventPage({ params }: { params: { id: string } }) {
   async function getEventDetails() {
     startTransition(async () => {
       try {
-        const response = await getEvent(params.id);
-        setEventDetails(response![0]);
+        const response = await getEvent(params.id, user?.id!);
+        setEventDetails(
+          response.data?.map((record) => record.events).flat()[0]
+        );
       } catch (error) {
         toast.error("Something went wrong. Please try again later!");
       }
@@ -30,8 +38,8 @@ export default function EventPage({ params }: { params: { id: string } }) {
   }
 
   useEffect(() => {
-    getEventDetails();
-  }, [params.id]);
+    if (params.id && user?.id) getEventDetails();
+  }, [params.id, user?.id]);
 
   return (
     <div className="h-full flex justify-center">
@@ -47,10 +55,16 @@ export default function EventPage({ params }: { params: { id: string } }) {
               {!editEvent ? (
                 <div className="overflow-auto">
                   {eventDetails.event_target && (
-                    <CountDownComponent
-                      event_target={eventDetails.event_target}
-                      event_theme={eventDetails.event_theme}
-                    />
+                    <div className="flex flex-col gap-2">
+                      {eventDetails.event_owner === user?.id && (
+                        <AnnouncementInput event_id={eventDetails.event_id} />
+                      )}
+                      <CountDownComponent
+                        event_target={eventDetails.event_target}
+                        event_theme={eventDetails.event_theme}
+                      />
+                      <EventBody eventId={eventDetails.event_id} />
+                    </div>
                   )}
                 </div>
               ) : (

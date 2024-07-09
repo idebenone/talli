@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
-
+import Link from "next/link";
 import { useAtomValue } from "jotai";
-import { userAtom } from "@/components/UserProfile";
 
-import { Link2, PlusCircle } from "lucide-react";
 import { getEvents } from "./actions";
 import { Event } from "@/lib/types";
-import { Skeleton } from "@/components/ui/skeleton";
+import { userAtom } from "@/utils/atoms";
+
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link2, PlusCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 export default function EventsPage() {
   const user = useAtomValue(userAtom);
@@ -23,7 +23,9 @@ export default function EventsPage() {
     setTransition(async () => {
       try {
         const response = await getEvents(user.id);
-        setEvents(response || []);
+        setEvents(
+          response.data?.map((record) => record.events).flat() as Event[]
+        );
       } catch (error) {
         toast.error("Something went wrong. Please try again later");
       }
@@ -67,10 +69,7 @@ export default function EventsPage() {
           <div className="flex flex-col gap-2">
             {events.map((event, index) => (
               <Link href={`/events/${event.event_id}`} key={index}>
-                <div
-                  key={index}
-                  className="p-4 border cursor-pointer hover:bg-muted transition-all duration-500 group"
-                >
+                <div className="p-4 border cursor-pointer hover:bg-muted transition-all duration-500 group">
                   <div className="flex justify-between items-center">
                     <p>{event.event_name}</p>
                     <Link2

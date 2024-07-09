@@ -7,12 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { useAtomValue } from "jotai";
 
-import { userAtom } from "@/components/UserProfile";
 import { updateEvent } from "../../actions";
 
 import { cn } from "@/lib/utils";
 import { Event } from "@/lib/types";
 import { THEMES } from "@/utils/themes";
+import { userAtom } from "@/utils/atoms";
 
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";

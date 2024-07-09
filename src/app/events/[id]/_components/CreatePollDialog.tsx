@@ -2,10 +2,10 @@ import { useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { useAtomValue } from "jotai";
-import { userAtom } from "@/components/UserProfile";
+
 import { createPoll } from "../../actions";
+import { userAtom } from "@/utils/atoms";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -72,7 +72,9 @@ const CreatePollDialog: React.FC<CreatePollDialogProps> = ({
     setTransition(async () => {
       try {
         await createPoll({ user_id: user?.id!, event_id, ...values });
+        setDialogState();
         toast.success("Poll has been created");
+        form.reset();
       } catch (error) {
         toast.error("Something went wrong. Please try again later");
       }

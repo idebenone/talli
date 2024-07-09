@@ -76,10 +76,27 @@ const config = {
           }
         },
       },
+      "loader": {
+        "0%": {
+          transform: "translateX(100%)",
+          opacity: "0%",
+        },
+        "50%": {
+          transform: "translateX(0%)",
+          opacity: "100%",
+          width: "100vw"
+        },
+        "100%": {
+          transform: "translateX(-100%)",
+          opacity: "0%",
+          width: "0"
+        },
+      },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 2s ease-in-out forwards",
+        "loader": "loader 2s cubic-bezier(0.645, 0.045, 0.355, 1) forwards",
       },
     },
   },

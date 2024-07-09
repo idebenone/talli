@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
 
 import { addInvitedUser } from "./actions";
-import { userAtom } from "@/components/UserProfile";
 import { toast } from "sonner";
+import { userAtom } from "@/utils/atoms";
 
 export default function InvitePage() {
   const router = useRouter();

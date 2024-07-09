@@ -39,9 +39,9 @@ const CountDownComponent: React.FC<CountDownComponentProps> = ({
           style={{
             backgroundImage: theme?.bg ? `url(${theme.bg})` : undefined,
           }}
-          className={`relative flex flex-col justify-center items-center p-6 group transition-all duration-300 ease-in-out overflow-hidden
+          className={`relative flex flex-col justify-center items-center p-6 group transition-all duration-300 ease-in-out overflow-hidden bg-cover
             ${theme?.font?.className!}
-            ${expand ? "h-32" : "h-16 contrast-75 grayscale"}`}
+            ${expand ? "h-32" : "h-16 contrast-100 grayscale"}`}
         >
           <div className="flex gap-2.5 ">
             {Object.entries(formatTime(remainingTime)).map(([key, value]) => (
@@ -52,9 +52,9 @@ const CountDownComponent: React.FC<CountDownComponentProps> = ({
                 key={key}
               >
                 <p
-                  className={`${theme?.font_weight} ${
-                    expand ? theme?.font_size_expanded! : theme?.font_size!
-                  }`}
+                  className={`transition-all duration-500 ${
+                    theme?.font_weight
+                  } ${expand ? theme?.font_size_expanded! : theme?.font_size!}`}
                 >
                   {value < 10 && 0}
                   {value}

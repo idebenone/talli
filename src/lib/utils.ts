@@ -26,3 +26,31 @@ export function formatTime(totalSeconds: number) {
     sec,
   };
 };
+
+export function convertToTime(isoString: string) {
+  const date = new Date(isoString);
+  const options: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+    // second: 'numeric',
+    hour12: true,
+    timeZone: 'UTC',
+    // timeZoneName: 'short'
+  };
+  const readableDate = new Intl.DateTimeFormat('en-US', options).format(date);
+  return readableDate;
+}
+
+export function formatNumberToIndianSystem(figure: number) {
+  if (isNaN(figure) || !isFinite(figure)) return '0';
+  const roundedFigure = parseFloat(figure.toFixed(2));
+  let numberString = roundedFigure.toString();
+  const [integerPart, decimalPart] = numberString.split('.');
+  const lastThreeDigits = integerPart.slice(-3);
+  const otherDigits = integerPart.slice(0, -3);
+  const formattedIntegerPart = otherDigits
+    ? otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + lastThreeDigits
+    : lastThreeDigits;
+  return decimalPart ? formattedIntegerPart + '.' + decimalPart : formattedIntegerPart;
+}
+

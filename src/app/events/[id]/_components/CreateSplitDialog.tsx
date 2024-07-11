@@ -78,7 +78,7 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
           ...values,
           event_id,
           split_owner: user?.id!,
-          split_amount: inputValue,
+          split_amount: parseFloat(inputValue.toFixed(2)),
           split_users: splitUsers
             .filter((user) => user.include)
             .map((user) => ({

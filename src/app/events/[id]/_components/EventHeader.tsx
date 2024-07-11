@@ -16,6 +16,7 @@ import {
   CirclePlus,
   EllipsisVertical,
   Link as LucideLink,
+  Megaphone,
   SquareChevronUp,
   Trash,
   User,
@@ -40,11 +41,13 @@ import CreateSplitDialog from "./CreateSplitDialog";
 interface EventHeaderProps {
   eventDetails: Event | null;
   setEditEvent: () => void;
+  setAnnouncement: () => void;
 }
 
 const EventHeader: React.FC<EventHeaderProps> = ({
   eventDetails,
   setEditEvent,
+  setAnnouncement,
 }) => {
   const user = useAtomValue(userAtom);
   const router = useRouter();
@@ -101,6 +104,12 @@ const EventHeader: React.FC<EventHeaderProps> = ({
                   handleCopyEventLink(_event, eventDetails?.event_id)
                 }
               />
+
+              <Megaphone
+                className="w-4 h-4 cursor-pointer"
+                onClick={setAnnouncement}
+              />
+
               <Popover>
                 <PopoverTrigger>
                   <CirclePlus className="w-4 h-4 cursor-pointer" />
@@ -125,8 +134,6 @@ const EventHeader: React.FC<EventHeaderProps> = ({
                     <BadgeIndianRupee className="h-4 w-4" />
                     <p>Split</p>
                   </div>
-
-                  <div></div>
                 </PopoverContent>
               </Popover>
 

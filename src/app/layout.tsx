@@ -7,6 +7,7 @@ import { siteConfig } from "@/config/site.config";
 
 import "./globals.css";
 import UserProvider from "@/components/providers/user-provider";
+import Nav from "@/components/navbar/nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -80,7 +81,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <UserProvider>{children}</UserProvider>
+            <UserProvider>
+              {children}
+              <Nav />
+            </UserProvider>
             <Toaster position="bottom-center" closeButton richColors />
           </ThemeProvider>
         </JotaiProvider>

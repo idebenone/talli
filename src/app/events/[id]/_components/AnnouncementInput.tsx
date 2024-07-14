@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useState, useTransition } from "react";
 import { useAtomValue } from "jotai";
-import { userAtom } from "@/utils/atoms";
+import { EventChannelAtom, userAtom } from "@/utils/atoms";
 
 import { Button } from "@/components/ui/button";
 import { Sticker, X } from "lucide-react";
@@ -11,6 +11,7 @@ import Spinner from "@/components/ui/spinner";
 import GifPickerDialog from "./GifPickerDialog";
 import { TenorImage } from "gif-picker-react";
 import Image from "next/image";
+import { Announcement } from "@/lib/types";
 
 interface CreateAnnouncement {
   content: string;
@@ -26,8 +27,11 @@ const AnnouncementInput: React.FC<AnnouncementInputProps> = ({
   event_id,
   setAnnouncement,
 }) => {
+  const channel = useAtomValue(EventChannelAtom);
   const user = useAtomValue(userAtom);
+
   const [isPending, startTransition] = useTransition();
+
   const [an, setAn] = useState<CreateAnnouncement>({ content: "", gif: "" });
   const [gifPickerState, setGifPickerState] = useState<boolean>(false);
 
@@ -54,22 +58,41 @@ const AnnouncementInput: React.FC<AnnouncementInputProps> = ({
   const submitAnnouncement = useCallback(() => {
     startTransition(async () => {
       try {
-        await createAnnouncement({
+        const response = await createAnnouncement({
           event_id,
           user_id: user?.id!,
           an_content: an,
         });
         setAn({ content: "", gif: "" });
-        toast.success("Announcement created successfully!");
+        toast.success("They know what you wanna know!");
+        broadcastAnnouncement(response.data);
       } catch (error) {
         toast.error("Something went wrong. Please try again later!");
       }
     });
   }, [an, event_id, user?.id]);
 
+  function broadcastAnnouncement(data: Announcement) {
+    if (channel) {
+      channel.send({
+        type: "broadcast",
+        event: "notifications",
+        payload: {
+          ...data,
+          type: "announcement",
+          owner: {
+            name: user?.user_metadata.full_name,
+            avatar_url: user?.user_metadata.avatar_url,
+          },
+          createdAt: new Date(data.created_at),
+        },
+      });
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex gap-2 border p-2 relative">
+    <div className="flex flex-col gap-2 absolute top-0 w-full z-50 bg-background pb-2">
+      <div id="announcement_input" className="flex gap-2 border p-2 relative">
         {an.gif && (
           <span className="relative">
             <Image
@@ -97,7 +120,7 @@ const AnnouncementInput: React.FC<AnnouncementInputProps> = ({
         </div>
       </div>
 
-      <div className="flex gap-2 justify-end">
+      <div id="announcement_footer" className="flex gap-2 justify-end">
         <Button size="icon" variant="outline" onClick={handleGifPickerToggle}>
           <Sticker className="text-muted-foreground" />
         </Button>

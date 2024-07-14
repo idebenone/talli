@@ -7,9 +7,9 @@ import { useAtomValue } from "jotai";
 
 import { createSplit } from "../../actions";
 
-import { EventUsersListAtom, userAtom } from "@/utils/atoms";
+import { EventChannelAtom, EventUsersListAtom, userAtom } from "@/utils/atoms";
 import { formatNumberToIndianSystem } from "@/lib/utils";
-import { SavedUser } from "@/lib/types";
+import { SavedUser, Split } from "@/lib/types";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -37,6 +37,8 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
 }) => {
   const user = useAtomValue(userAtom);
   const eventUsers = useAtomValue(EventUsersListAtom);
+  const channel = useAtomValue(EventChannelAtom);
+
   const [isPending, setTransition] = useTransition();
 
   const [inputValue, setInputValue] = useState<number>(0);
@@ -86,12 +88,31 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
               split_user_amount: user.user_amount,
             })),
         });
-        toast.success(response.statusText);
+        toast.success("Split has been created");
         setDialogState();
+        broadcastSplit(response.data.split);
       } catch (error) {
         toast.success("Something went wrong. Please try again later!");
       }
     });
+  }
+
+  function broadcastSplit(data: Split) {
+    if (channel) {
+      channel.send({
+        type: "broadcast",
+        event: "notifications",
+        payload: {
+          ...data,
+          type: "split",
+          owner: {
+            name: user?.user_metadata.full_name,
+            avatar_url: user?.user_metadata.avatar_url,
+          },
+          createdAt: new Date(data.created_at),
+        },
+      });
+    }
   }
 
   function handleCheckChange(id: string) {

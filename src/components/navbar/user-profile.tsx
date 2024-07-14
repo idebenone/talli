@@ -71,7 +71,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
             <AlertDialogAction onClick={onSignOut}>
               <div className="flex items-center gap-3">
                 <p>In progress</p>
-                <Spinner color="" />
+                <Spinner />
               </div>
             </AlertDialogAction>
           </AlertDialogFooter>

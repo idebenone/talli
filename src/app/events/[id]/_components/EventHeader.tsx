@@ -105,10 +105,12 @@ const EventHeader: React.FC<EventHeaderProps> = ({
                 }
               />
 
-              <Megaphone
-                className="w-4 h-4 cursor-pointer"
-                onClick={setAnnouncement}
-              />
+              {user?.id === eventDetails.event_owner && (
+                <Megaphone
+                  className="w-4 h-4 cursor-pointer"
+                  onClick={setAnnouncement}
+                />
+              )}
 
               <Popover>
                 <PopoverTrigger>

@@ -42,7 +42,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="h-full flex justify-center">
-      <div className="p-2 w-full flex flex-col gap-4 sm:w-3/4 lg:w-2/5">
+      <div className="p-2 w-full flex flex-col gap-4 md:w-4/5 lg:w-3/5">
         {!isPending && eventDetails && (
           <>
             <EventHeader
@@ -52,15 +52,20 @@ export default function EventPage({ params }: { params: { id: string } }) {
             />
 
             {!editEvent ? (
-              <div className="overflow-auto pr-2 pb-16">
+              <div className="pb-16">
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-col gap-2 sticky top-0 bg-background z-10">
-                    {eventDetails.event_owner === user?.id && announcement && (
-                      <AnnouncementInput
-                        event_id={eventDetails.event_id}
-                        setAnnouncement={() => setAnnouncement(!announcement)}
-                      />
-                    )}
+                    <div className="relative">
+                      {eventDetails.event_owner === user?.id &&
+                        announcement && (
+                          <AnnouncementInput
+                            event_id={eventDetails.event_id}
+                            setAnnouncement={() =>
+                              setAnnouncement(!announcement)
+                            }
+                          />
+                        )}
+                    </div>
                     {eventDetails.event_target && (
                       <CountDownComponent
                         event_target={eventDetails.event_target}

@@ -2,7 +2,6 @@
 
 import { CreateAnnouncement, CreateEvent, CreatePoll, CreateSplit, Event } from '@/lib/types';
 import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation'
 
 export async function createEvent(data: CreateEvent) {
     const supabase = createClient();
@@ -76,7 +75,7 @@ export async function createSplit(data: CreateSplit) {
 
 export async function createAnnouncement(data: CreateAnnouncement) {
     const supabase = createClient();
-    return await supabase.from("announcements").insert([data]);
+    return await supabase.from("announcements").insert([data]).select().single();
 }
 
 export async function getEventBody(event_id: string) {

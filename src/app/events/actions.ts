@@ -83,3 +83,66 @@ export async function getEventBody(event_id: string) {
     const supabase = createClient();
     return await supabase.rpc('get_event_body', { event_id });
 }
+
+export async function addVote(poll_id: any, user_id: any,choice_id: any) {
+    const supabase = createClient();
+    
+    const { data: existingVote, error: fetchError } = await supabase
+    .from("poll_votes").select("*").eq("poll_id", poll_id).eq("user_id", user_id).single();
+    
+    if(existingVote){
+
+        const { data: existingChoice, error: existingChoiceError } = await supabase
+        .from("poll_choices").select("vote_count").eq("choice_id", existingVote.choice_id).single();
+
+        if(existingChoiceError) return
+
+        const { error: incrementError } = await supabase
+            .from("poll_choices").update({ vote_count: existingChoice.vote_count - 1 })
+            .eq("choice_id", existingVote.choice_id).eq("poll_id", poll_id);
+        
+
+        const { data, error } = await supabase
+        .from("poll_votes").update({ choice_id })
+        .eq("poll_id", poll_id).eq("user_id", user_id);
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        
+
+    }
+    else {
+        const { data, error } = await supabase.from("poll_votes")
+        .insert([{ poll_id, user_id, choice_id }]).select();
+
+        if (error) {
+        console.error("Error inserting new vote:", error);
+        return;
+        }
+
+        
+    }
+    const { data: newChoice, error: newChoiceError } = await supabase
+        .from("poll_choices").select("vote_count").eq("choice_id", choice_id).eq("poll_id", poll_id).single();
+
+        if (newChoiceError) {
+            console.error(newChoiceError);
+            return;
+        }
+
+        const { error: incrementError } = await supabase
+            .from("poll_choices").update({ vote_count: newChoice.vote_count + 1 })
+            .eq("choice_id", choice_id).eq("poll_id", poll_id);
+     
+}
+
+export async function getPollVotesByUser(event_id:any,user_id:any){
+    const supabase = createClient();
+    const { data, error } = await supabase.from("poll_votes").
+    select("*").eq("event_id",event_id).eq("user_id",user_id)
+
+    return data
+}

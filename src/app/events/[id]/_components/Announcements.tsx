@@ -8,7 +8,7 @@ interface AnnouncementsProps {
 const Announcements: React.FC<AnnouncementsProps> = ({ announcement }) => {
   return (
     <div className="p-4 flex flex-col gap-3 justify-center">
-      {announcement.an_content.gif && (
+      {/* {announcement.an_content.gif && (
         <Image
           src={announcement.an_content.gif}
           alt="Gif"
@@ -19,7 +19,7 @@ const Announcements: React.FC<AnnouncementsProps> = ({ announcement }) => {
       )}
       <p className="text-center text-xs tracking-tighter font-semibold text-muted-foreground">
         {announcement.an_content.content}
-      </p>
+      </p> */}
     </div>
   );
 };

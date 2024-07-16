@@ -5,6 +5,7 @@ import Announcements from "./Announcements";
 import SplitComponent from "./SplitComponent";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/utils/atoms";
+import PollComponent from "./PollComponent";
 
 interface EventBodyProps {
   eventId: string;
@@ -20,7 +21,7 @@ const EventBody: React.FC<EventBodyProps> = ({ eventId }) => {
       try {
         const response = await getEventBody(eventId);
         const data = response.data[0];
-
+        console.log(data);
         const announcements = data.announcements
           ? data.announcements.map((item: any) => ({
               ...item,
@@ -33,6 +34,7 @@ const EventBody: React.FC<EventBodyProps> = ({ eventId }) => {
           ? data.polls.map((item: any) => ({
               ...item.poll,
               choices: item.choices,
+              votes: item.votes,
               type: "poll",
               createdAt: new Date(item.poll.created_at),
             }))
@@ -50,6 +52,7 @@ const EventBody: React.FC<EventBodyProps> = ({ eventId }) => {
 
         setEventBodyData([...announcements, ...polls, ...splits]);
       } catch (error) {
+        console.log(error);
         toast.error("Something went wrong. Please try again later!");
       }
     });
@@ -66,7 +69,7 @@ const EventBody: React.FC<EventBodyProps> = ({ eventId }) => {
           {event.type === "announcement" && (
             <Announcements announcement={event} />
           )}
-
+          {event.type === "poll" && <PollComponent poll={event} />}
           <div
             className={`flex ${
               user?.id! === event.split_owner ? "justify-end" : "justify-start"

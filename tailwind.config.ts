@@ -1,6 +1,5 @@
-import type { Config } from "tailwindcss"
-
-const config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',
@@ -8,7 +7,6 @@ const config = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -53,6 +51,28 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            "code::before": {
+              content: '""',
+            },
+            "code::after": {
+              content: '""',
+            },
+          },
+        },
+        quoteless: {
+          css: {
+            "blockquote p:first-of-type::before": { content: "none" },
+            "blockquote p:first-of-type::after": { content: "none" },
+          },
+        },
+      },
+      backgroundImage: {
+        "gradient-radial":
+          "radial-gradient(50% 50% at 50% 50%, var(--tw-gradient-stops))",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -60,12 +80,12 @@ const config = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
+          from: { height: 0 },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          to: { height: 0 },
         },
         "fade-in": {
           "0%": {
@@ -75,32 +95,108 @@ const config = {
             opacity: "100%"
           }
         },
-      },
-      "loader": {
-        "0%": {
-          transform: "translateX(100%)",
-          opacity: "0%",
+        "fade-left": {
+          "0%": {
+            transform: "translateX(100%)",
+            opacity: "0%",
+          },
+
+          "70%": {
+            transform: "translateX(0%)",
+            opacity: "100%",
+          },
+          "100%": {
+            transform: "translateX(-100%)",
+            opacity: "0%",
+          },
         },
-        "50%": {
-          transform: "translateX(0%)",
-          opacity: "100%",
-          width: "100vw"
+        "fade-right": {
+          "0%": {
+            transform: "translateX(-100%)",
+            opacity: "0%",
+          },
+
+          "70%": {
+            transform: "translateX(0%)",
+            opacity: "100%",
+          },
+          "100%": {
+            transform: "translateX(100%)",
+            opacity: "0%",
+          },
         },
-        "100%": {
-          transform: "translateX(-100%)",
-          opacity: "0%",
-          width: "0"
+        "title": {
+          "0%": {
+            "line-height": "0%",
+            opacity: "0",
+          },
+          "25%": {
+            "line-height": "0%",
+            opacity: "0%",
+          },
+          "80%": {
+            opacity: "100%",
+          },
+
+          "100%": {
+            "line-height": "100%",
+            opacity: "100%",
+          },
         },
+        "loader": {
+          "0%": {
+            transform: "translateX(100%)",
+            opacity: "0%",
+          },
+          "50%": {
+            transform: "translateX(0%)",
+            opacity: "100%",
+            width: "100vw"
+          },
+          "100%": {
+            transform: "translateX(-100%)",
+            opacity: "0%",
+            width: "0"
+          },
+        },
+        "fade-in-out": {
+          "0%": {
+            transform: "translateY(0%)",
+            opacity: "0%",
+          },
+          "50%": {
+            opacity: "100%",
+            transform: "translateY(30%)",
+          },
+          "100%": {
+            opacity: "0%",
+            transform: "translateY(0%)",
+          },
+        },
+        "noise-in": {
+          "0%": {
+            opacity: "0%"
+          },
+          "50%": {
+            opacity: "5%"
+          },
+          "100%": {
+            opacity: "15%"
+          }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 2s ease-in-out forwards",
+        "fade-left": "fade-left 3s ease-in-out forwards",
+        "fade-right": "fade-right 3s ease-in-out forwards",
+        title: "title 3s ease-in-out forwards",
         "loader": "loader 2s cubic-bezier(0.645, 0.045, 0.355, 1) forwards",
+        "fade-in-out": "fade-in-out 2s infinite ease-in-out",
+        "noise-in": "noise-in 0.5s ease-in-out "
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-} satisfies Config
-
-export default config
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+}

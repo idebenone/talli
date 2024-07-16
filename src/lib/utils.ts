@@ -32,10 +32,7 @@ export function convertToTime(isoString: string) {
   const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric',
     minute: 'numeric',
-    // second: 'numeric',
     hour12: true,
-    timeZone: 'UTC',
-    // timeZoneName: 'short'
   };
   const readableDate = new Intl.DateTimeFormat('en-US', options).format(date);
   return readableDate;

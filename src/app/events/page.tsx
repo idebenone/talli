@@ -46,7 +46,7 @@ export default function EventsPage() {
   }
 
   useEffect(() => {
-    handleFetchEvents();
+    if (user) handleFetchEvents();
   }, [user]);
 
   return (

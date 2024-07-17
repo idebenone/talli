@@ -71,10 +71,15 @@ const CreatePollDialog: React.FC<CreatePollDialogProps> = ({
   function onSubmit(values: z.infer<typeof formSchema>) {
     setTransition(async () => {
       try {
-        await createPoll({ user_id: user?.id!, event_id, ...values });
+        const response = await createPoll({
+          user_id: user?.id!,
+          event_id,
+          ...values,
+        });
         setDialogState();
         toast.success("Poll has been created");
         form.reset();
+        console.log(response);
       } catch (error) {
         toast.error("Something went wrong. Please try again later");
       }

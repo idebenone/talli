@@ -11,7 +11,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
   loading,
 }) => (
   <div className="flex justify-end">
-    <Button onClick={onClick} disabled={loading}>
+    <Button data-testid="google_auth" onClick={onClick} disabled={loading}>
       {loading ? (
         <div className="flex items-center gap-3">
           <p>In progress</p>

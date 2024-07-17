@@ -95,11 +95,11 @@ export interface Split {
     split_amount: number
     created_at: Date
     modified_at: Date
-    owner: SplitOwner
+    owner: Owner
     split_users: SplitUsers[]
 }
 
-export interface SplitOwner {
+export interface Owner {
     name: string
     avatar_url: string
 }
@@ -130,7 +130,8 @@ export interface Announcement {
     an_content: {
         content: string
         gif: string
-    }
-    creatd_at: Date
+    },
+    owner: Owner
+    created_at: Date
     modified_at: Date
 }

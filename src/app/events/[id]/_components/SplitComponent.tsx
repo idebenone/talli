@@ -15,7 +15,7 @@ const SplitComponent: React.FC<SplitComponentProps> = ({ split }) => {
 
   return (
     <div
-      className={`flex flex-col gap-2 ${
+      className={`flex flex-col gap-1  ${
         user?.id! === split.split_owner ? "items-end" : ""
       }`}
     >
@@ -37,16 +37,17 @@ const SplitComponent: React.FC<SplitComponentProps> = ({ split }) => {
         />
         <div className="border border-muted p-4 flex flex-col gap-2 w-[300px]">
           {!split.split_title ? (
-            <p>Split Request</p>
+            <p className="text-xs">Split Request</p>
           ) : (
-            <p>Requested for {split.split_title}</p>
+            <p className="text-xs">
+              <span className="text-muted-foreground">Requested for</span>
+              <span className="font-semibold"> {split.split_title}</span>
+            </p>
           )}
           <div className="flex gap-1 items-center">
             <p>₹</p>
             <p className="text-3xl font-bold">{split.split_amount}</p>
           </div>
-
-          <p>{split.split_title}</p>
 
           {split.split_users?.map(
             (split_user, index) =>

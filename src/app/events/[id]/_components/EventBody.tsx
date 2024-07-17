@@ -69,6 +69,7 @@ const EventBody: React.FC<EventBodyProps> = ({ eventId }) => {
         const combinedData = transformEventData(data);
         setEventBodyData(combinedData);
       } catch (error) {
+        console.log(error);
         toast.error("Something went wrong. Please try again later!");
       }
     });

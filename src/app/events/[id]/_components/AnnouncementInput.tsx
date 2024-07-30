@@ -92,7 +92,7 @@ const AnnouncementInput: React.FC<AnnouncementInputProps> = ({
 
   return (
     <div className="flex flex-col gap-2 absolute top-0 w-full z-50 bg-background pb-2">
-      <div id="announcement_input" className="flex gap-2 border p-2 relative">
+      <div id="announcement_input" className="flex gap-2 border p-4 relative">
         {an.gif && (
           <span className="relative">
             <Image

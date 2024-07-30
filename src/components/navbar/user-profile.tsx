@@ -14,6 +14,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -28,7 +36,9 @@ export const UserProfile: React.FC<UserProfileProps> = ({
   user,
   onSignOut,
 }) => {
-  const [signoutConfirm, setSignoutConfirm] = useState(false);
+  const [signoutConfirm, setSignoutConfirm] = useState<boolean>(false);
+  const [settingsDialogState, setSettingsDialogState] =
+    useState<boolean>(false);
 
   return (
     <Popover>
@@ -46,6 +56,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
         <div
           className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500"
           data-testid="popover_settings"
+          onClick={() => setSettingsDialogState(!settingsDialogState)}
         >
           <Settings className="h-4 w-4" />
           <p>Settings</p>
@@ -83,6 +94,23 @@ export const UserProfile: React.FC<UserProfileProps> = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog
+        open={settingsDialogState}
+        onOpenChange={() => setSettingsDialogState(!setSettingsDialogState)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Settings</DialogTitle>
+            <DialogDescription>We are still working on it</DialogDescription>
+          </DialogHeader>
+
+          <div>
+            <p>Appearance</p>
+            <span className="flex flex-col md:flex-row gap-2"></span>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Popover>
   );
 };

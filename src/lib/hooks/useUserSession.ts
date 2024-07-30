@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAtomValue, useSetAtom } from "jotai";
-import { User } from "@supabase/supabase-js";
+import { useSetAtom } from "jotai";
 
 import { createClient } from "@/utils/supabase/client";
 import { userAtom } from "@/utils/atoms";
 import useOnlineStatus from "@/lib/hooks/useOnlineStatus";
 
 const useUserSession = () => {
-  const user = useAtomValue(userAtom);
   const setUser = useSetAtom<any>(userAtom);
   const router = useRouter();
   const isOnline = useOnlineStatus();

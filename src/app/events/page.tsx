@@ -32,9 +32,14 @@ export default function EventsPage() {
     });
   }
 
-  function handleCopyEventLink(event: React.MouseEvent, event_id: string) {
+  function handleCopyEventLink(
+    event: React.MouseEvent,
+    event_id: string,
+    event_name: string
+  ) {
     event.preventDefault();
-    const encoded = btoa(event_id);
+    const data = { event_id, event_name };
+    const encoded = btoa(JSON.stringify(data));
     navigator.clipboard
       .writeText(`${location.origin}/invite?code=${encoded}`)
       .then(() => {
@@ -51,7 +56,7 @@ export default function EventsPage() {
 
   return (
     <div className="h-full flex justify-center">
-      <div className="p-2 w-full sm:w-3/4 lg:w-2/5">
+      <div className="p-2 w-full lg:w-4/5 xl:w-3/5">
         <div className="py-6 lg:py-12 flex justify-between items-center">
           <p className="text-xl font-semibold">Your Events</p>
 
@@ -74,7 +79,9 @@ export default function EventsPage() {
                     <p>{event.event_name}</p>
                     <Link2
                       className="h-4 w-4 text-muted-foreground cursor-pointer hidden group-hover:block"
-                      onClick={(e) => handleCopyEventLink(e, event.event_id)}
+                      onClick={(e) =>
+                        handleCopyEventLink(e, event.event_id, event.event_name)
+                      }
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">

@@ -1,8 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 import { Announcement } from "@/lib/types";
 import { convertToTime } from "@/lib/utils";
 import { userAtom } from "@/utils/atoms";
 import { useAtomValue } from "jotai";
-import Image from "next/image";
 
 interface AnnouncementsProps {
   announcement: Announcement;
@@ -26,7 +26,7 @@ const Announcements: React.FC<AnnouncementsProps> = ({ announcement }) => {
           user?.id! === announcement.data.user_id ? "flex-row-reverse" : ""
         }`}
       >
-        <Image
+        <img
           src={announcement.owner.avatar_url}
           alt={announcement.owner.name}
           width="400"
@@ -36,7 +36,7 @@ const Announcements: React.FC<AnnouncementsProps> = ({ announcement }) => {
 
         <div className="flex gap-2">
           {announcement.data.an_content.gif && (
-            <Image
+            <img
               src={announcement.data.an_content.gif}
               alt="Gif"
               width="400"

@@ -27,8 +27,8 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="h-full flex flex-col gap-4 justify-center items-center">
-        <p className="text-3xl text-muted-foreground">Jokers behind this</p>
+      <div className="h-full flex flex-col gap-12 justify-center items-center">
+        <p className="text-xl text-muted-foreground">Jokers behind this</p>
         <div className="flex flex-col md:flex-row gap-2">
           {authors.map((author, index) => (
             <div key={index} className="border border-muted p-2">

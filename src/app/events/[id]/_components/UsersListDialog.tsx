@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useAtomValue, useSetAtom } from "jotai";
 
 import { getEventUsers, removeEventUser } from "../../actions";
@@ -80,7 +80,7 @@ const UserListDialog: React.FC<UserListDialogProps> = ({
                 className="flex justify-between items-start cursor-pointer group hover:bg-muted hover:p-3 duration-100 group"
               >
                 <div className="flex items-center gap-4">
-                  <Image
+                  <img
                     height="400"
                     width="400"
                     className="h-10 w-10 grayscale-100 group-hover:grayscale-0"

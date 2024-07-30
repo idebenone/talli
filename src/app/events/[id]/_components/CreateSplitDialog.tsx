@@ -90,7 +90,16 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
         });
         toast.success("Split has been created");
         setDialogState();
-        broadcastSplit(response.data.split);
+        broadcastSplit({
+          data: response.data.data,
+          type: "split",
+          owner: {
+            name: user?.user_metadata.full_name,
+            avatar_url: user?.user_metadata.avatar_url,
+          },
+          split_users: response.data.split_users,
+          created_at: new Date(response.data.data.created_at),
+        });
       } catch (error) {
         toast.success("Something went wrong. Please try again later!");
       }
@@ -102,15 +111,7 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
       channel.send({
         type: "broadcast",
         event: "notifications",
-        payload: {
-          data,
-          type: "split",
-          owner: {
-            name: user?.user_metadata.full_name,
-            avatar_url: user?.user_metadata.avatar_url,
-          },
-          created_at: new Date(data.created_at),
-        },
+        payload: data,
       });
     }
   }

@@ -7,7 +7,7 @@ function Skeleton({
   return (
     <div
       className={cn(
-        "animated-background bg-gradient-to-r from-stone-950 via-stone-900 to-stone-950",
+        "animated-background bg-gradient-to-r from-stone-900 via-stone-800 to-stone-900",
         className
       )}
       {...props}

@@ -56,7 +56,7 @@ export default function EventsPage() {
 
   return (
     <div className="h-full flex justify-center">
-      <div className="p-2 w-full lg:w-4/5 xl:w-3/5">
+      <div className="p-2 w-full lg:w-4/5 xl:w-1/2">
         <div className="py-6 lg:py-12 flex justify-between items-center">
           <p className="text-xl font-semibold">Your Events</p>
 

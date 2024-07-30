@@ -23,7 +23,7 @@ const GifPickerDialog: React.FC<GifPickerDialogProps> = ({
     <Dialog open={dialogState} onOpenChange={setDialogState}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>GIF's</DialogTitle>
+          <DialogTitle>GIF&lsquo;s</DialogTitle>
           <DialogDescription>
             Come on, don&lsquo;t be shy, pick your gif!
           </DialogDescription>

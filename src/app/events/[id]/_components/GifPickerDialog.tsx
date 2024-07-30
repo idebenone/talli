@@ -25,7 +25,7 @@ const GifPickerDialog: React.FC<GifPickerDialogProps> = ({
         <DialogHeader>
           <DialogTitle>GIF's</DialogTitle>
           <DialogDescription>
-            Come on, don't be shy, pick your gif!
+            Come on, don&lsquo;t be shy, pick your gif!
           </DialogDescription>
           <GifPicker
             onGifClick={gifUrl}

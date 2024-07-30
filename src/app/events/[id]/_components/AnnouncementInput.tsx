@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { ChangeEvent, useCallback, useState, useTransition } from "react";
 import { useAtomValue } from "jotai";
 import { EventChannelAtom, userAtom } from "@/utils/atoms";
@@ -10,7 +11,6 @@ import { createAnnouncement } from "../../actions";
 import Spinner from "@/components/ui/spinner";
 import GifPickerDialog from "./GifPickerDialog";
 import { TenorImage } from "gif-picker-react";
-import Image from "next/image";
 import { Announcement } from "@/lib/types";
 
 interface CreateAnnouncement {
@@ -64,7 +64,7 @@ const AnnouncementInput: React.FC<AnnouncementInputProps> = ({
           an_content: an,
         });
         setAn({ content: "", gif: "" });
-        toast.success("They know what you wanna know!");
+        toast.success("They know!");
         broadcastAnnouncement(response.data);
       } catch (error) {
         toast.error("Something went wrong. Please try again later!");
@@ -78,13 +78,13 @@ const AnnouncementInput: React.FC<AnnouncementInputProps> = ({
         type: "broadcast",
         event: "notifications",
         payload: {
-          ...data,
           type: "announcement",
+          data,
           owner: {
             name: user?.user_metadata.full_name,
             avatar_url: user?.user_metadata.avatar_url,
           },
-          createdAt: new Date(data.created_at),
+          created_at: new Date(data.created_at),
         },
       });
     }
@@ -92,10 +92,10 @@ const AnnouncementInput: React.FC<AnnouncementInputProps> = ({
 
   return (
     <div className="flex flex-col gap-2 absolute top-0 w-full z-50 bg-background pb-2">
-      <div id="announcement_input" className="flex gap-2 border p-2 relative">
+      <div id="announcement_input" className="flex gap-2 border p-4 relative">
         {an.gif && (
           <span className="relative">
-            <Image
+            <img
               src={an.gif}
               alt={an.gif}
               height="400"

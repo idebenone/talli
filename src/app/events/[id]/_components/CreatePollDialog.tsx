@@ -5,12 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtomValue } from "jotai";
 
 import { createPoll } from "../../actions";
-import { userAtom } from "@/utils/atoms";
+import { EventChannelAtom, userAtom } from "@/utils/atoms";
 
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -26,6 +27,7 @@ import { PlusCircle, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import Spinner from "@/components/ui/spinner";
+import { Poll } from "@/lib/types";
 
 interface CreatePollDialogProps {
   event_id: string;
@@ -51,6 +53,7 @@ const CreatePollDialog: React.FC<CreatePollDialogProps> = ({
 }) => {
   const user = useAtomValue(userAtom);
   const [isPending, setTransition] = useTransition();
+  const channel = useAtomValue(EventChannelAtom);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,14 +74,37 @@ const CreatePollDialog: React.FC<CreatePollDialogProps> = ({
   function onSubmit(values: z.infer<typeof formSchema>) {
     setTransition(async () => {
       try {
-        await createPoll({ user_id: user?.id!, event_id, ...values });
+        const response = await createPoll({
+          user_id: user?.id!,
+          event_id,
+          ...values,
+        });
         setDialogState();
         toast.success("Poll has been created");
         form.reset();
+        broadcastPolls(response.data);
       } catch (error) {
         toast.error("Something went wrong. Please try again later");
       }
     });
+  }
+
+  function broadcastPolls(data: Poll) {
+    if (channel) {
+      channel.send({
+        type: "broadcast",
+        event: "notifications",
+        payload: {
+          ...data,
+          type: "poll",
+          owner: {
+            name: user?.user_metadata.full_name,
+            avatar_url: user?.user_metadata.avatar_url,
+          },
+          created_at: new Date(data.data.created_at),
+        },
+      });
+    }
   }
 
   return (
@@ -86,7 +112,7 @@ const CreatePollDialog: React.FC<CreatePollDialogProps> = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create a Poll</DialogTitle>
-          {/* <DialogDescription>List of users</DialogDescription> */}
+          <DialogDescription>Everyone has an opinion</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>

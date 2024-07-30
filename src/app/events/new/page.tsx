@@ -93,7 +93,7 @@ export default function CreateEventPage() {
 
   return (
     <div className="h-full flex justify-center">
-      <div className="p-2 w-full sm:w-3/4 lg:w-2/5">
+      <div className="p-2 w-full lg:w-4/5 xl:w-1/2">
         <div className="py-6 md:py-12 flex gap-4 items-center">
           <Link href="/events">
             <ArrowLeft className="h-4 w-4 cursor-pointer" />

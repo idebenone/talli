@@ -42,7 +42,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="h-full flex justify-center">
-      <div className="p-2 w-full flex flex-col gap-4 md:w-4/5 lg:w-3/5">
+      <div className="p-2 w-full flex flex-col gap-4 lg:w-4/5 xl:w-1/2">
         {!isPending && eventDetails && (
           <>
             <EventHeader

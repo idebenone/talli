@@ -9,7 +9,7 @@ import { createSplit } from "../../actions";
 
 import { EventChannelAtom, EventUsersListAtom, userAtom } from "@/utils/atoms";
 import { formatNumberToIndianSystem } from "@/lib/utils";
-import { SavedUser, Split } from "@/lib/types";
+import { UserProfile, Split } from "@/lib/types";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -43,7 +43,7 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
 
   const [inputValue, setInputValue] = useState<number>(0);
   const [splitUsers, setSplitUsers] = useState<
-    { user: SavedUser; user_amount: number; include: boolean }[]
+    { user: UserProfile; user_amount: number; include: boolean }[]
   >([]);
 
   const spanRef = useRef<HTMLSpanElement>(null);
@@ -63,7 +63,7 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
 
   function updateSplitUsersAmount(
     rawValue: number,
-    users: { user: SavedUser; user_amount: number; include: boolean }[]
+    users: { user: UserProfile; user_amount: number; include: boolean }[]
   ) {
     const includedCount = users.filter((user) => user.include).length;
     const newAmount = rawValue / includedCount;
@@ -90,7 +90,16 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
         });
         toast.success("Split has been created");
         setDialogState();
-        broadcastSplit(response.data.split);
+        broadcastSplit({
+          data: response.data.data,
+          type: "split",
+          owner: {
+            name: user?.user_metadata.full_name,
+            avatar_url: user?.user_metadata.avatar_url,
+          },
+          split_users: response.data.split_users,
+          created_at: new Date(response.data.data.created_at),
+        });
       } catch (error) {
         toast.success("Something went wrong. Please try again later!");
       }
@@ -102,15 +111,7 @@ const CreateSplitDialog: React.FC<CreateSplitDialogProps> = ({
       channel.send({
         type: "broadcast",
         event: "notifications",
-        payload: {
-          ...data,
-          type: "split",
-          owner: {
-            name: user?.user_metadata.full_name,
-            avatar_url: user?.user_metadata.avatar_url,
-          },
-          createdAt: new Date(data.created_at),
-        },
+        payload: data,
       });
     }
   }

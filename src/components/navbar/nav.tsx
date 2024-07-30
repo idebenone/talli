@@ -61,9 +61,9 @@ export default function Nav() {
   }, [user]);
 
   return (
-    <div className="absolute w-full bottom-2">
+    <div className="fixed w-full bottom-0 md:bottom-2">
       <div className="flex justify-center">
-        <div className="p-2 backdrop-blur-sm flex justify-between items-center w-full sm:w-3/4 lg:w-2/5 border">
+        <div className="p-2 backdrop-blur-sm flex justify-between items-center w-full lg:w-4/5 xl:w-1/2 border">
           {!userLoading ? (
             <>
               <div className="flex gap-3">

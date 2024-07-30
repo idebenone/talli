@@ -39,7 +39,7 @@ const CountDownComponent: React.FC<CountDownComponentProps> = ({
           style={{
             backgroundImage: theme?.bg ? `url(${theme.bg})` : undefined,
           }}
-          className={`relative flex flex-col justify-center items-center p-6 group transition-all duration-300 ease-in-out overflow-hidden bg-cover
+          className={`absolute w-full flex flex-col justify-center items-center p-6 group transition-all duration-300 ease-in-out overflow-hidden bg-cover
             ${theme?.font?.className!}
             ${expand ? "h-32" : "h-16 contrast-100 grayscale"}`}
         >

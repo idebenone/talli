@@ -22,12 +22,6 @@ import {
   User,
 } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -82,22 +76,25 @@ const EventHeader: React.FC<EventHeaderProps> = ({
     <>
       {eventDetails && (
         <>
-          <div id="header" className="py-4 flex justify-between items-start">
-            <div className="flex gap-4">
+          <div
+            id="header"
+            className="py-1 md:py-4 flex flex-col md:flex-row gap-2 md:gap-0 justify-between items-start"
+          >
+            <div className="flex gap-2 md:gap-4">
               <Link href="/events">
-                <ChevronLeft className="h-5 w-5 mt-3 cursor-pointer" />
+                <ChevronLeft className="h-5 w-5 mt-1 md:mt-3 cursor-pointer" />
               </Link>
-              <div className="flex flex-col">
-                <p className="text-4xl font-semibold">
+              <div className="flex flex-col md:gap-4">
+                <p className="text-xl md:text-4xl font-semibold">
                   {eventDetails?.event_name}
                 </p>
-                <p className="mt-4 italic text-xs text-muted-foreground">
+                <p className="italic text-[10px] md:text-xs text-muted-foreground">
                   {eventDetails?.event_description}
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4 items-center mt-3">
+            <div className="ps-7 mt-3 flex gap-4 items-center">
               <LucideLink
                 className="w-4 h-4 cursor-pointer"
                 onClick={(_event) =>
@@ -146,31 +143,28 @@ const EventHeader: React.FC<EventHeaderProps> = ({
 
               {user?.id === eventDetails.event_owner && (
                 <>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                  <Popover>
+                    <PopoverTrigger>
                       <EllipsisVertical className="h-4 w-4 cursor-pointer" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <div
-                          className="flex items-center gap-2"
-                          onClick={setEditEvent}
-                        >
-                          <SquareChevronUp className="mb-0.5 h-4 w-4" />
-                          <p>Update</p>
-                        </div>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <div
-                          className="flex items-center gap-2 text-red-600"
-                          onClick={handleDeleteEvent}
-                        >
-                          <Trash className="mb-1 h-4 w-4" />
-                          <p>Delete</p>
-                        </div>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-40 flex flex-col gap-1.5 p-1">
+                      <div
+                        className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500"
+                        onClick={setEditEvent}
+                      >
+                        <SquareChevronUp className="mb-0.5 h-4 w-4" />
+                        <p>Update</p>
+                      </div>
+
+                      <div
+                        className="px-2 py-1 flex items-center gap-2 cursor-pointer hover:bg-muted duration-500"
+                        onClick={handleDeleteEvent}
+                      >
+                        <Trash className="mb-1 h-4 w-4" />
+                        <p>Delete</p>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </>
               )}
             </div>

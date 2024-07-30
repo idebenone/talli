@@ -16,7 +16,7 @@ const SplitComponent: React.FC<SplitComponentProps> = ({ split }) => {
   return (
     <div
       className={`flex flex-col gap-1  ${
-        user?.id! === split.split_owner ? "items-end" : ""
+        user?.id! === split.data.split_owner ? "items-end" : ""
       }`}
     >
       <p className="text-[10px] text-muted-foreground">
@@ -25,7 +25,7 @@ const SplitComponent: React.FC<SplitComponentProps> = ({ split }) => {
 
       <div
         className={`flex gap-2 ${
-          user?.id! === split.split_owner ? "flex-row-reverse" : ""
+          user?.id! === split.data.split_owner ? "flex-row-reverse" : ""
         }`}
       >
         <Image
@@ -36,17 +36,17 @@ const SplitComponent: React.FC<SplitComponentProps> = ({ split }) => {
           className="h-8 w-8"
         />
         <div className="border border-muted p-4 flex flex-col gap-2 w-[300px]">
-          {!split.split_title ? (
+          {!split.data.split_title ? (
             <p className="text-xs">Split Request</p>
           ) : (
             <p className="text-xs">
               <span className="text-muted-foreground">Requested for</span>
-              <span className="font-semibold"> {split.split_title}</span>
+              <span className="font-semibold"> {split.data.split_title}</span>
             </p>
           )}
           <div className="flex gap-1 items-center">
             <p>₹</p>
-            <p className="text-3xl font-bold">{split.split_amount}</p>
+            <p className="text-3xl font-bold">{split.data.split_amount}</p>
           </div>
 
           {split.split_users?.map(

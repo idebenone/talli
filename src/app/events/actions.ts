@@ -78,70 +78,36 @@ export async function createAnnouncement(data: CreateAnnouncement) {
     return await supabase.from("announcements").insert([data]).select().single();
 }
 
-export async function getEventBody(event_id: string) {
+export async function getEventBody(event_id: string, _offset: number) {
     const supabase = createClient();
-    return await supabase.rpc('get_event_body', { event_id });
+    return await supabase.rpc('get_event_body', { event_id_param: event_id, _limit: 10, _offset });
 }
 
-export async function addVote(poll_id: any, user_id: any,choice_id: any) {
+export async function addVote(poll_id: number, user_id: string, choice_id: number) {
     const supabase = createClient();
-    
-    const { data: existingVote, error: fetchError } = await supabase
-    .from("poll_votes").select("*").eq("poll_id", poll_id).eq("user_id", user_id).single();
-    
-    if(existingVote){
-
-        const { data: existingChoice, error: existingChoiceError } = await supabase
-        .from("poll_choices").select("vote_count").eq("choice_id", existingVote.choice_id).single();
-
-        if(existingChoiceError) return
-
-        const { error: incrementError } = await supabase
-            .from("poll_choices").update({ vote_count: existingChoice.vote_count - 1 })
-            .eq("choice_id", existingVote.choice_id).eq("poll_id", poll_id);
-        
-
-        const { data, error } = await supabase
-        .from("poll_votes").update({ choice_id })
-        .eq("poll_id", poll_id).eq("user_id", user_id);
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        
-
+    const { data: existingVote } = await supabase
+        .from("poll_votes").select("*").eq("poll_id", poll_id).eq("user_id", user_id).single();
+    if (existingVote) {
+        const { data: existingChoice } = await supabase
+            .from("poll_choices").select("vote_count").eq("choice_id", existingVote.choice_id).single();
+        await supabase
+            .from("poll_choices").update({ vote_count: existingChoice?.vote_count - 1 })
+            .eq("choice_id", existingVote.choice_id)
     }
     else {
-        const { data, error } = await supabase.from("poll_votes")
-        .insert([{ poll_id, user_id, choice_id }]).select();
-
-        if (error) {
-        console.error("Error inserting new vote:", error);
-        return;
-        }
-
-        
+        await supabase.from("poll_votes")
+            .insert([{ poll_id, user_id, choice_id }]).select();
+        const { data: newChoice } = await supabase
+            .from("poll_choices").select("vote_count").eq("choice_id", choice_id).single();
+        await supabase
+            .from("poll_choices").update({ vote_count: newChoice?.vote_count + 1 })
+            .eq("choice_id", choice_id);
     }
-    const { data: newChoice, error: newChoiceError } = await supabase
-        .from("poll_choices").select("vote_count").eq("choice_id", choice_id).eq("poll_id", poll_id).single();
-
-        if (newChoiceError) {
-            console.error(newChoiceError);
-            return;
-        }
-
-        const { error: incrementError } = await supabase
-            .from("poll_choices").update({ vote_count: newChoice.vote_count + 1 })
-            .eq("choice_id", choice_id).eq("poll_id", poll_id);
-     
 }
 
-export async function getPollVotesByUser(event_id:any,user_id:any){
+export async function getPollResults(poll_id: number) {
     const supabase = createClient();
-    const { data, error } = await supabase.from("poll_votes").
-    select("*").eq("event_id",event_id).eq("user_id",user_id)
-
-    return data
+    return (await supabase.from("poll_choices").select("*").eq("poll_id", poll_id));
 }
+
+

@@ -4,7 +4,7 @@ export const aboutConfig: About = [
     {
         index: 1,
         title: "Plan . Invite . Vibe",
-        description: "whether it&aposs a chill hangout or a blowout bash, Talli&aposs got you. Craft epic invites with GIFs and messages that scream."
+        description: "whether it\'s a chill hangout or a blowout bash, Talli\'s got you. Craft epic invites with GIFs and messages that scream."
     },
     {
         index: 2,

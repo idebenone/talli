@@ -56,7 +56,11 @@ const EventHeader: React.FC<EventHeaderProps> = ({
   function handleCopyEventLink(event: React.MouseEvent, event_id: string) {
     event.preventDefault();
     const encoded = btoa(event_id);
-    navigator.clipboard.writeText(`${location.origin}/invite?code=${encoded}`);
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(
+        `${location.origin}/invite?code=${encoded}`
+      );
+    }
     toast.success("Invite link has been copied!");
   }
 

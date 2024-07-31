@@ -40,14 +40,16 @@ export default function EventsPage() {
     event.preventDefault();
     const data = { event_id, event_name };
     const encoded = btoa(JSON.stringify(data));
-    navigator.clipboard
-      .writeText(`${location.origin}/invite?code=${encoded}`)
-      .then(() => {
-        toast.success("Invite link has been copied!");
-      })
-      .catch(() => {
-        toast.error("Failed to copy invite link");
-      });
+    if (typeof window !== "undefined") {
+      navigator.clipboard
+        .writeText(`${location.origin}/invite?code=${encoded}`)
+        .then(() => {
+          toast.success("Invite link has been copied!");
+        })
+        .catch(() => {
+          toast.error("Failed to copy invite link");
+        });
+    }
   }
 
   useEffect(() => {

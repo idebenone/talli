@@ -8,8 +8,10 @@ import { addInvitedUser } from "./actions";
 import { toast } from "sonner";
 import { userAtom } from "@/utils/atoms";
 import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
+import Spinner from "@/components/ui/spinner";
 
-export default function InvitePage() {
+function InvitePage() {
   const router = useRouter();
   const user = useAtomValue(userAtom);
   const searchParams = useSearchParams();
@@ -35,7 +37,7 @@ export default function InvitePage() {
     <div className="h-full flex justify-center items-center">
       <div className="flex flex-col justify-center">
         <p className="text-muted-foreground text-xs">You are about to join</p>
-        <p className="text-5xl font-bold">
+        <p className="text-2xl md:text-5xl font-bold">
           {JSON.parse(atob(code!)).event_name}
         </p>
         <div className="mt-4 flex gap-4 justify-center">
@@ -44,5 +46,19 @@ export default function InvitePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function InvitePageWithSuspense() {
+  return (
+    <Suspense
+      fallback={
+        <div className="h-full w-full">
+          <Spinner />
+        </div>
+      }
+    >
+      <InvitePage />
+    </Suspense>
   );
 }

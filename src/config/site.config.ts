@@ -2,7 +2,7 @@ import type { Site } from "@/lib/types";
 
 export const siteConfig: Site = {
     name: "talli.vercel.app",
-    title: "talli | talli.vercel.app | Your ultimate party sidekick",
+    title: "talli | Your ultimate party sidekick",
     description: "Some description about talli",
     keywords: [
         "talli",
@@ -17,9 +17,9 @@ export const siteConfig: Site = {
         name: "Soham M",
         url: "",
     }],
-    ogImage: "https://rdsx.dev/og.png",
+    ogImage: "https://talli.vercel.app/next.svg",
     links: {
-        x: "https://x.com/rds_agi",
-        github: "https://github.com/rudrodip",
+        x: "https://x.com/laz__en",
+        github: "https://github.com/idebenone",
     }
 }

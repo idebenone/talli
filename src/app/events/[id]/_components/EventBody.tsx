@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { EventChannelAtom, userAtom } from "@/utils/atoms";
 import { debounce } from "lodash";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import Announcements from "./Announcements";
 import SplitComponent from "./SplitComponent";
 import PollComponent from "./PollComponent";
+import Spinner from "@/components/ui/spinner";
 
 interface EventBodyProps {
   eventId: string;
@@ -25,26 +26,30 @@ const EventBody: React.FC<EventBodyProps> = ({ eventId }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isScrolledToBottom = useRef<boolean>(true);
 
+  const [isPending, startTransition] = useTransition();
+
   const [offset, setOffset] = useState<number>(0);
   const [eventBodyData, setEventBodyData] = useState<any[]>([]);
   const [isLast, setIsLast] = useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
   const handleFetchEventBody = debounce(async () => {
-    try {
-      const response = await getEventBody(eventId, offset);
-      console.log(response.data.reverse());
-      if (response.data.length !== 0) {
-        setEventBodyData((prev) => {
-          const newData = [...response.data, ...prev];
-          return newData;
-        });
-      } else {
-        setIsLast(true);
+    startTransition(async () => {
+      try {
+        const response = await getEventBody(eventId, offset);
+        console.log(response.data.reverse());
+        if (response.data.length !== 0) {
+          setEventBodyData((prev) => {
+            const newData = [...response.data, ...prev];
+            return newData;
+          });
+        } else {
+          setIsLast(true);
+        }
+      } catch (error) {
+        toast.error("Something went wrong. Please try again later!");
       }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again later!");
-    }
+    });
   }, 1000);
 
   useEffect(() => {
@@ -112,19 +117,26 @@ const EventBody: React.FC<EventBodyProps> = ({ eventId }) => {
 
   return (
     <div
-      className="overflow-auto h-[calc(100vh-16.5rem)] pr-2 mt-16"
+      className="overflow-auto h-[calc(100vh-13.25rem)] md:h-[calc(100vh-16.5rem)] pr-2 mt-16"
       ref={containerRef}
     >
-      <div className="flex flex-col item gap-6">
-        {!isLast && (
-          <span className="flex justify-center">
-            <p
-              className="px-3 cursor-pointer text-xs text-muted-foreground border border-muted rounded-xl"
-              onClick={() => setOffset(offset + 10)}
-            >
-              load previous
-            </p>
-          </span>
+      <div className="flex flex-col item gap-6 h-full">
+        {!isPending ? (
+          !isLast &&
+          eventBodyData.length !== 0 && (
+            <span className="flex justify-center">
+              <p
+                className="px-3 cursor-pointer text-xs text-muted-foreground"
+                onClick={() => setOffset(offset + 10)}
+              >
+                load previous
+              </p>
+            </span>
+          )
+        ) : (
+          <div className="flex justify-center items-center h-full">
+            <p className="text-[12px] text-muted-foreground">loading...</p>
+          </div>
         )}
         {eventBodyData.map((event, index) => (
           <div key={index}>

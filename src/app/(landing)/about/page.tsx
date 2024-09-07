@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { IconMap } from "@/components/icon-map";
@@ -28,7 +29,7 @@ export default function AboutPage() {
       </div>
 
       <div className="h-full flex flex-col gap-12 justify-center items-center">
-        <p className="text-xl text-muted-foreground">Jokers behind this</p>
+        <p className="text-xl text-muted-foreground">These guys 🤦</p>
         <div className="flex flex-col md:flex-row gap-2">
           {authors.map((author, index) => (
             <div key={index} className="border border-muted p-2">

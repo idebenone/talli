@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import { calculateRemainingTime, formatTime } from "@/lib/utils";
 import { THEMES } from "@/utils/themes";
 
@@ -36,25 +35,30 @@ const CountDownComponent: React.FC<CountDownComponentProps> = ({
     <>
       {event_target && (
         <div
+          onClick={() => setExpand(!expand)}
           style={{
             backgroundImage: theme?.bg ? `url(${theme.bg})` : undefined,
           }}
-          className={`absolute w-full flex flex-col justify-center items-center p-6 group transition-all duration-300 ease-in-out overflow-hidden bg-cover
+          className={`absolute w-full flex flex-col justify-center items-center p-2 md:p-6 group transition-all duration-300 ease-in-out overflow-hidden bg-cover cursor-pointer
             ${theme?.font?.className!}
             ${expand ? "h-32" : "h-16 contrast-100 grayscale"}`}
         >
-          <div className="flex gap-2.5 ">
+          <div className="flex gap-2.5">
             {Object.entries(formatTime(remainingTime)).map(([key, value]) => (
               <div
                 className={`${
-                  expand ? "p-2 w-fit" : "border-none w-fit"
+                  expand ? "p-1 md:p-2 w-fit" : "border-none w-fit"
                 } flex gap-1 justify-center items-baseline transition-all duration-300 ease-in-out`}
                 key={key}
               >
                 <p
                   className={`transition-all duration-500 ${
                     theme?.font_weight
-                  } ${expand ? theme?.font_size_expanded! : theme?.font_size!}`}
+                  } ${
+                    expand
+                      ? `text-xl md:${theme?.font_size_expanded!}`
+                      : theme?.font_size!
+                  }`}
                 >
                   {value < 10 && 0}
                   {value}
@@ -67,18 +71,6 @@ const CountDownComponent: React.FC<CountDownComponentProps> = ({
               </div>
             ))}
           </div>
-
-          {expand ? (
-            <ChevronUp
-              onClick={() => setExpand(false)}
-              className="absolute right-4 top-14 h-4 w-4 cursor-pointer text-muted-foreground hidden group-hover:block"
-            />
-          ) : (
-            <ChevronDown
-              onClick={() => setExpand(true)}
-              className="absolute right-2 w-4 h-4 cursor-pointer text-muted-foreground "
-            />
-          )}
         </div>
       )}
     </>

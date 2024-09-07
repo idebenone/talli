@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 export default function Root() {
   return (
     <div className="h-screen w-screen flex justify-center items-center">
-      <div className="flex flex-col items-end">
+      <div className="flex flex-col items-center md:items-end">
         <div className="md:h-6 flex flex-col md:flex-row gap-3 md:gap-6 items-center">
           <p className="tracking-tighter text-6xl font-bold animate-fade-in">
             talli .

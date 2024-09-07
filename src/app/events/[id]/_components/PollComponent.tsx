@@ -135,7 +135,7 @@ const PollComponent: React.FC<PollComponentProps> = ({ poll }) => {
           className="h-8 w-8"
         />
         <div className="p-4 border border-muted flex flex-col gap-2 w-[300px]">
-          <p className="text-lg">{poll.data.poll_title}</p>
+          <p className="text-sm font-semibold">{poll.data.poll_title}</p>
 
           {!viewResult && (
             <div className="flex flex-col gap-1">

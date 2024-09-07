@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 
@@ -49,6 +49,8 @@ const UserListDialog: React.FC<UserListDialogProps> = ({
   async function handleRemoveEventUser(event_user_id: string) {
     try {
       await removeEventUser(event_user_id);
+      const response = await getEventUsers(event_id);
+      setUsersList(response.data as any);
     } catch (error) {
       toast.error("Something went wrong. Please try again later");
     }
@@ -66,7 +68,7 @@ const UserListDialog: React.FC<UserListDialogProps> = ({
           <DialogDescription>List of users</DialogDescription>
         </DialogHeader>
 
-        <Input placeholder="Search users" />
+        {/* <Input placeholder="Search users" /> */}
         {userList.length === 0 && (
           <div className="flex justify-center items-center">
             <p className="text-muted-foreground">No users found</p>
